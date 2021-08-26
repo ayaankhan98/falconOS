@@ -4,8 +4,8 @@ MAGIC             equ                   0x1badb002              ; Helps bootload
 MBALIGN           equ                   1 << 0                  ; align loaded modules on page boundaries
 MEMINFO           equ                   1 << 1                  ; provide memory map
 FLAGS             equ                   MBALIGN | MEMINFO       ; this is the Multiboot 'flag' field
-FLAGS             equ                   (1<<0 | 1<<1)           ; Setting multiboot flag field
-CHECKSUM          equ                   -(MAGIC + FLAGS)        ; Helps in proving that we are muliboot
+CHECKSUM          equ                   -(MAGIC + FLAGS)        ; Helps in proving that we are multiboot
+                                                                ; CHECKSUM + MAGIC + FLAGS = 0, if the section is multiboot
 
 ; Declare a multiboot header that marks the program as a kernel. These are magic
 ; values that are documented in the multiboot standard. The bootloader will
@@ -35,8 +35,8 @@ loader:
                   mov                   esp, kernel_stack       ; Moves the address of start of the stack into esp
 
                   call                  callConstructors
-                  push                  eax
-                  push                  ebx
+                  push                  eax                     ; The bootloader saves the pointer to the multiboot header into the ax register and the value of magic number
+                  push                  ebx                     ; into the bx register, so pushing it to stack so that we could reference it in kernelMain
                   call                  kernelMain
 
                   cli                                           ; Clears all interrupts
@@ -44,7 +44,7 @@ loader:
 _stop;
                   hlt                                           ; Wait for the next interrupt to arrive, ultimately bringing the program to a complete stop
                   jmp                   _stop                   ; If the program goes forward, i.e., an interrupt rises, then run an infinite loop
-
+                                                                ; This is required so that the kernel keeps running
 
 
 ; The multiboot standard does not define the value of the stack pointer register
