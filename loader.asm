@@ -41,7 +41,7 @@ loader:
 
                   cli                                           ; Clears all interrupts
 
-_stop;
+_stop:
                   hlt                                           ; Wait for the next interrupt to arrive, ultimately bringing the program to a complete stop
                   jmp                   _stop                   ; If the program goes forward, i.e., an interrupt rises, then run an infinite loop
                                                                 ; This is required so that the kernel keeps running
