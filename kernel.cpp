@@ -1,5 +1,6 @@
 #include "types.h"                                      // for integer types
 #include "gdt.h"                                        // for GlobalDescriptorTable
+#include "interrupt.h"
 
 void printf(const char* str) {
   
@@ -21,8 +22,10 @@ extern "C" void callConstructors() {                     // call all global obje
 
 extern "C" void kernelMain(void* multiboot_structure,   // TODO :- Use the multiboot structure defined in multiboot.h in GNU project
     uint32_t magicnumber) {
-  printf("Hello World!\n");
+  printf("Hello World!");
   GlobalDescriptorTable gdt;
+  InterruptManager interruptManager(&gdt);
 
+  interruptManager.activate();
   while(1);                                             // This keeps the kernel running
 }

@@ -1,10 +1,14 @@
-objects = loader.o kernel.o gdt.o port.o
+objects = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o
 
 %.o: %.cpp
-	g++ -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -o $@ -c $<
+	g++ -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -o $@ -c $< -g
 
 %.o: %.asm
 	nasm -f elf32 -o $@ $<
+
+run: mykernel.iso
+	(killall VirtualBox && sleep 1) || true
+	VirtualBox --startVM 'Minor Project' &
 
 mykernel.bin: linker.ld ${objects}
 	ld -m elf_i386 -T $< -o $@ ${objects}
@@ -26,3 +30,7 @@ mykernel.iso: mykernel.bin
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=$@ iso
 	rm -rf iso
+
+.PHONY: clean
+clean:
+	rm -rf ${objects} mykernel.bin mykernel.iso
