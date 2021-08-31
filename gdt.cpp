@@ -47,7 +47,7 @@ GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base, uint3
 
   target[0] = limit & 0xFF;
   target[1] = (limit >> 8) & 0xFF;
-  target[6] = (limit >> 16) & 0xF;
+  target[6] |= (limit >> 16) & 0xF;
 
   target[2] = base & 0xFF;
   target[3] = (base >> 8) & 0xFF;
