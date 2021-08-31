@@ -2,62 +2,50 @@ IRQ_BASE equ 0x20
 
 section .text
 
-extern _ZN16InterruptManager15handleInterruptEhj
+  extern _ZN16InterruptManager15handleInterruptEhj
+  global _ZN16InterruptManager15ignoreInterruptEv
 
-%macro handleException 1
-global _ZN16InterruptManager16handleException%1Ev
-_ZN16InterruptManager16handleException%1Ev:
-  mov [interruptNumber], byte %1
-  jmp int_bottom
-%endmacro
+  %macro handleException 1
+    global _ZN16InterruptManager16handleException%1Ev
+    _ZN16InterruptManager16handleException%1Ev:
+        mov [interruptNumber], byte %1
+        jmp serve_interrupt
+  %endmacro
 
-%macro handleInterruptRequest 1
-global _ZN16InterruptManager26handleInterruptRequest%1Ev
-_ZN16InterruptManager26handleInterruptRequest%1Ev:
-  mov [interruptNumber], byte %1 + IRQ_BASE
-  jmp int_bottom
-%endmacro
+  %macro handleInterruptRequest 1
+    global _ZN16InterruptManager26handleInterruptRequest%1Ev
+    _ZN16InterruptManager26handleInterruptRequest%1Ev:
+      mov [interruptNumber], byte %1 + IRQ_BASE
+      jmp serve_interrupt
+  %endmacro
 
-handleInterruptRequest 0x00
-handleInterruptRequest 0x01
+  handleInterruptRequest 0x00
+  handleInterruptRequest 0x01
 
-int_bottom:
-  push eax
-  push ebx
-  push ecx
-  push edx
-  push ebp
-  push edi
-  push esi
+  serve_interrupt:
+    pusha
 
-  push ds
-  push es
-  push fs
-  push gs
+    push ds
+    push es
+    push fs
+    push gs
 
-  push esp
-  push interruptNumber
-  call _ZN16InterruptManager15handleInterruptEhj
- ; add esp, 6
-  mov esp, eax
+    push esp
+    push interruptNumber
+    call _ZN16InterruptManager15handleInterruptEhj
+    add esp, 6
+    mov esp, eax
 
-  pop gs
-  pop fs
-  pop es
-  pop ds
+    pop gs
+    pop fs
+    pop es
+    pop ds
 
-  pop esi
-  pop edi
-  pop ebp
-  pop edx
-  pop ecx
-  pop ebx
-  pop eax
+    popa
 
-global _ZN16InterruptManager15InterruptIgnoreEv
-_ZN16InterruptManager15InterruptIgnoreEv:
+    iret
+  _ZN16InterruptManager15ignoreInterruptEv:
+      iret
 
-  iret
-
-section .data:
+section .data
   interruptNumber DB 0

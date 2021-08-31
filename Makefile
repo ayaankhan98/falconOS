@@ -1,5 +1,4 @@
-objects = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o
-
+objects = loader.o kernel.o gdt.o port.o interrupt_stubs.o interrupt.o
 %.o: %.cpp
 	g++ -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -o $@ -c $< -g
 
