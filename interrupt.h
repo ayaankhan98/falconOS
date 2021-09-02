@@ -13,10 +13,10 @@ class InterruptManager {
     void activate();
 
   protected:
-    Port8Bit picMasterCommand;
-    Port8Bit picMasterData;
-    Port8Bit picSlaveCommand;
-    Port8Bit picSlaveData;
+    Port8Bit programmableInterruptControllerMasterCommandPort;
+    Port8Bit programmableInterruptControllerMasterDataPort;
+    Port8Bit programmableInterruptControllerSlaveCommandPort;
+    Port8Bit programmableInterruptControllerSlaveDataPort;
 
     /// an entry in Interrupt descriptor table is known as gate descriptor
     struct GateDescriptor {

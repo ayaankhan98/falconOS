@@ -1,4 +1,3 @@
-
 IRQ_BASE equ 0x20
 
 section .text
