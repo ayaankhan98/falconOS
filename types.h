@@ -1,11 +1,6 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
-/**
- * These help in changing the bytes allocated without changing anything in the
- * main .cpp files
- * */
-
 typedef char int8_t;
 typedef unsigned char uint8_t;
 
