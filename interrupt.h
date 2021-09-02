@@ -13,18 +13,18 @@ class InterruptManager {
     void activate();
 
   protected:
-    Port8BitSlow picMasterCommand;
-    Port8BitSlow picMasterData;
-    Port8BitSlow picSlaveCommand;
-    Port8BitSlow picSlaveData;
+    Port8Bit picMasterCommand;
+    Port8Bit picMasterData;
+    Port8Bit picSlaveCommand;
+    Port8Bit picSlaveData;
 
     /// an entry in Interrupt descriptor table is known as gate descriptor
     struct GateDescriptor {
       uint16_t handlerAddressLowBits;
-      uint16_t handlerAddressHighBits;
       uint16_t GDT_codeSegmentSelector;
       uint8_t reserved;
       uint8_t permissions;
+      uint16_t handlerAddressHighBits;
     } __attribute__((packed));
 
     struct InterruptDescriptorTablePointer {
@@ -82,6 +82,9 @@ class InterruptManager {
     static void handleException0x11();
     static void handleException0x12();
     static void handleException0x13();
+
+  private:
+    constexpr static uint8_t hardwareInterruptOffset = 0x20;
 };
 
 #endif
