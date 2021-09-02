@@ -2,8 +2,7 @@
 
 void printf(const char* str);
 
-InterruptManager::GateDescriptor InterruptManager
-::interruptDescriptorTable[256];
+InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256];
 
 void InterruptManager::setInterruptDescriptorTableEntry(
     uint8_t interruptNumber_,
@@ -21,7 +20,8 @@ void InterruptManager::setInterruptDescriptorTableEntry(
   interruptDescriptorTable[interruptNumber_].reserved = 0;
 }
 
-InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_) {
+InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_):
+picMasterCommand(0x20), picMasterData(0x21), picSlaveCommand(0xA0), picSlaveData(0xA1) {
   uint16_t codeSegment = gdt_->CodeSegmentSelector();
   constexpr uint8_t IDT_INTERRUPT_GATE = 0xE;
 
@@ -29,8 +29,58 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_) {
     setInterruptDescriptorTableEntry(i, codeSegment, &ignoreInterrupt, 0, IDT_INTERRUPT_GATE);
   }
 
-  setInterruptDescriptorTableEntry(0x20, codeSegment, &handleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
-  setInterruptDescriptorTableEntry(0x21, codeSegment, &handleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x00, codeSegment, &handleException0x00, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x01, codeSegment, &handleException0x01, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x02, codeSegment, &handleException0x02, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x03, codeSegment, &handleException0x03, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x04, codeSegment, &handleException0x04, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x05, codeSegment, &handleException0x05, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x06, codeSegment, &handleException0x06, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x07, codeSegment, &handleException0x07, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x08, codeSegment, &handleException0x08, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x09, codeSegment, &handleException0x09, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0A, codeSegment, &handleException0x0A, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0B, codeSegment, &handleException0x0B, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0C, codeSegment, &handleException0x0C, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0D, codeSegment, &handleException0x0D, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0E, codeSegment, &handleException0x0E, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x0F, codeSegment, &handleException0x0F, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x10, codeSegment, &handleException0x10, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x11, codeSegment, &handleException0x11, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x12, codeSegment, &handleException0x12, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x13, codeSegment, &handleException0x13, 0, IDT_INTERRUPT_GATE);
+
+  setInterruptDescriptorTableEntry(0x20 + 0x00, codeSegment, &handleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x01, codeSegment, &handleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x02, codeSegment, &handleInterruptRequest0x02, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x03, codeSegment, &handleInterruptRequest0x03, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x04, codeSegment, &handleInterruptRequest0x04, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x05, codeSegment, &handleInterruptRequest0x05, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x06, codeSegment, &handleInterruptRequest0x06, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x07, codeSegment, &handleInterruptRequest0x07, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x08, codeSegment, &handleInterruptRequest0x08, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x09, codeSegment, &handleInterruptRequest0x09, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0A, codeSegment, &handleInterruptRequest0x0A, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0B, codeSegment, &handleInterruptRequest0x0B, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0C, codeSegment, &handleInterruptRequest0x0C, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0D, codeSegment, &handleInterruptRequest0x0D, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0E, codeSegment, &handleInterruptRequest0x0E, 0, IDT_INTERRUPT_GATE);
+  setInterruptDescriptorTableEntry(0x20 + 0x0F, codeSegment, &handleInterruptRequest0x0F, 0, IDT_INTERRUPT_GATE);
+
+  picMasterCommand.write(0x11);
+  picSlaveCommand.write(0x11);
+
+  picMasterData.write(0x20);
+  picSlaveData.write(0x28);
+
+  picMasterData.write(0x04);
+  picSlaveData.write(0x02);
+
+  picMasterData.write(0x01);
+  picSlaveData.write(0x01);
+
+  picMasterData.write(0x00);
+  picSlaveData.write(0x00);
 
   InterruptDescriptorTablePointer idt;
   idt.size = 256 * sizeof(GateDescriptor) - 1;
@@ -41,7 +91,6 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_) {
 
 InterruptManager::~InterruptManager() {}
 
-
 void InterruptManager::activate() {
   asm("sti");
 }
@@ -49,6 +98,6 @@ void InterruptManager::activate() {
 uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber_,
     uint32_t esp_) {
 
-  printf(" INTERRUPT");
+  printf("INTERRUPT");
   return esp_;
 }
