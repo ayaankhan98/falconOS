@@ -22,12 +22,12 @@ public:
 protected:
   static inline uint8_t read8(uint16_t port_) {
     uint8_t result;
-    __asm__ volatile("inb %1, %0" : "=a"(result) : "Nd"(port_));
+    __asm__ volatile("inb %1, %0" : "=a"(result) : "Nd" (port_));
     return result;
   }
 
   static inline void write8(uint16_t port_, uint8_t data_) {
-    __asm__ volatile("outb %0, %1" : : "a"(data_), "Nd"(port_));
+    __asm__ volatile("outb %0, %1" : : "a"(data_), "Nd" (port_));
   }
 };
 

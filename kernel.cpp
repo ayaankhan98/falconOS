@@ -22,13 +22,10 @@ extern "C" void callConstructors() {                     // call all global obje
 
 extern "C" void kernelMain(void* multiboot_structure,   // TODO :- Use the multiboot structure defined in multiboot.h in GNU project
     uint32_t magicnumber) {
-  printf("Hello World!");
+  printf("Hello world");
   GlobalDescriptorTable gdt;
-  printf("Loaded GDT");
   InterruptManager interruptManager(&gdt);
-  printf("Created Interrupt manager obj");
 
   interruptManager.activate();
-  printf("Activated Interrupt Manager");
-  while(1);                                             // This keeps the kernel running
+  while(1);                            // This keeps the kernel running
 }
