@@ -54,13 +54,13 @@ void log(const char* message_, const logLevel level_) {
       printf("[WARNING]: ", color::YELLOW_ON_BLACK);
       break;
     case logLevel::FATAL:
-      printf("[DEBUG]: ", color::LIGHT_RED_ON_BLACK);
+      printf("[FATAL]: ", color::LIGHT_RED_ON_BLACK);
       break;
     case logLevel::TRACE:
-      printf("[DEBUG]: ", color::WHITE_ON_BLACK);
+      printf("[TRACE]: ", color::WHITE_ON_BLACK);
       break;
     case logLevel::ERROR:
-      printf("[DEBUG]: ", color::RED_ON_BLACK);
+      printf("[ERROR]: ", color::RED_ON_BLACK);
       break;
   }
   printf(message_, color::WHITE_ON_BLACK);
