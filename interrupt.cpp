@@ -201,7 +201,8 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t interruptNumber_,
     char *hex = "0123456789ABCDEF";
     foo[22] = hex[(interruptNumber_ >> 4) & 0xF];
     foo[23] = hex[interruptNumber_ & 0xF];
-    printf(foo);
+    const char *foo_ = foo;
+    printf(foo_);
   }
 
   // hardware interrupts must be acknowledged
