@@ -2,6 +2,7 @@
 #include "streamio.h"
 
 InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256];
+InterruptManager* InterruptManager::activeInterruptManager = 0;
 
 void InterruptManager::setInterruptDescriptorTableEntry(
     uint8_t interruptNumber_,
@@ -135,12 +136,39 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_):
 InterruptManager::~InterruptManager() {}
 
 void InterruptManager::activate() {
+  if (activeInterruptManager != 0) {
+    activeInterruptManager->deactivate();
+  }
+  activeInterruptManager = this;
   asm("sti");
+}
+
+void InterruptManager::deactivate() {
+  if (activeInterruptManager == this) {
+    activeInterruptManager = 0;
+    asm("cli");
+  }
 }
 
 uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber_,
     uint32_t esp_) {
-
-  log("Firing an INTERRUPT", logLevel::DEBUG);
+  if (activeInterruptManager != 0)
+    return activeInterruptManager->doHandleInterrupt(interruptNumber_, esp_);
   return esp_;
 }
+
+uint32_t InterruptManager::doHandleInterrupt(uint8_t interruptNumber_,
+    uint32_t esp_) {
+  char *ch = (char*)interruptNumber_;
+  printf(ch);
+  printf("INTERRUPT");
+  if (0x20 <= interruptNumber_ && interruptNumber_ < 0x50) {
+    programmableInterruptControllerMasterCommandPort.write(0x20);
+    if (0x28 <= interruptNumber_) {
+      programmableInterruptControllerSlaveCommandPort.write(0x20);
+    }
+  }
+  return esp_;
+}
+
+

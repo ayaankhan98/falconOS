@@ -11,12 +11,15 @@ class InterruptManager {
     ~InterruptManager();
 
     void activate();
+    void deactivate();
 
   protected:
-    Port8Bit programmableInterruptControllerMasterCommandPort;
-    Port8Bit programmableInterruptControllerMasterDataPort;
-    Port8Bit programmableInterruptControllerSlaveCommandPort;
-    Port8Bit programmableInterruptControllerSlaveDataPort;
+    static InterruptManager* activeInterruptManager;
+
+    Port8BitSlow programmableInterruptControllerMasterCommandPort;
+    Port8BitSlow programmableInterruptControllerMasterDataPort;
+    Port8BitSlow programmableInterruptControllerSlaveCommandPort;
+    Port8BitSlow programmableInterruptControllerSlaveDataPort;
 
     /// an entry in Interrupt descriptor table is known as gate descriptor
     struct GateDescriptor {
@@ -43,6 +46,7 @@ class InterruptManager {
 
     static void ignoreInterrupt();
     static uint32_t handleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
+    uint32_t doHandleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
 
     static void handleInterruptRequest0x00();
     static void handleInterruptRequest0x01();
