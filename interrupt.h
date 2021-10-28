@@ -5,37 +5,46 @@
 #include "port.h"
 #include "gdt.h"
 
-class InterruptManager {
-  public:
-    InterruptManager(GlobalDescriptorTable* gdt_);
-    ~InterruptManager();
 
-    void activate();
-    void deactivate();
+class InterruptManager;
+
+class InterruptHandler {
+  protected:
+    uint8_t interruptNumber;
+    InterruptManager* interruptManager;
+    InterruptHandler(InterruptManager* interruptManager, uint8_t InterruptNumber);
+    ~InterruptHandler();
+
+  public:
+    virtual uint32_t HandleInterrupt(uint32_t esp);
+};
+
+class InterruptManager {
+  friend class InterruptHandler;
 
   protected:
     static InterruptManager* activeInterruptManager;
-
-    Port8BitSlow programmableInterruptControllerMasterCommandPort;
-    Port8BitSlow programmableInterruptControllerMasterDataPort;
-    Port8BitSlow programmableInterruptControllerSlaveCommandPort;
-    Port8BitSlow programmableInterruptControllerSlaveDataPort;
+    InterruptHandler* handlers[256];
 
     /// an entry in Interrupt descriptor table is known as gate descriptor
     struct GateDescriptor {
       uint16_t handlerAddressLowBits;
       uint16_t GDT_codeSegmentSelector;
       uint8_t reserved;
-      uint8_t permissions;
+      uint8_t access;
       uint16_t handlerAddressHighBits;
     } __attribute__((packed));
+
+    static GateDescriptor interruptDescriptorTable[256];
 
     struct InterruptDescriptorTablePointer {
       uint16_t size;
       uint32_t base;
     } __attribute__((packed));
 
-    static GateDescriptor interruptDescriptorTable[256];
+
+    uint16_t hardwareInterruptOffset_;
+
     static void setInterruptDescriptorTableEntry(
         uint8_t interruptNumber_,
         uint16_t codeSegmentSelectorOffset_,
@@ -45,8 +54,6 @@ class InterruptManager {
         );
 
     static void ignoreInterrupt();
-    static uint32_t handleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
-    uint32_t doHandleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
 
     static void handleInterruptRequest0x00();
     static void handleInterruptRequest0x01();
@@ -87,8 +94,20 @@ class InterruptManager {
     static void handleException0x12();
     static void handleException0x13();
 
-  private:
-    constexpr static uint8_t hardwareInterruptOffset = 0x20;
+    static uint32_t handleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
+    uint32_t doHandleInterrupt(uint8_t interruptNumber_, uint32_t esp_);
+
+    Port8BitSlow programmableInterruptControllerMasterCommandPort;
+    Port8BitSlow programmableInterruptControllerMasterDataPort;
+    Port8BitSlow programmableInterruptControllerSlaveCommandPort;
+    Port8BitSlow programmableInterruptControllerSlaveDataPort;
+  public:
+    InterruptManager(uint16_t hardwareInterruptOffset,
+        GlobalDescriptorTable* gdt_);
+    ~InterruptManager();
+    uint16_t hardwareInterruptOffset();
+    void activate();
+    void deactivate();
 };
 
 #endif

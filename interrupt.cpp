@@ -1,5 +1,23 @@
 #include "interrupt.h"
 #include "streamio.h"
+#include "types.h"
+
+InterruptHandler::InterruptHandler(InterruptManager* interruptManager_,
+    uint8_t interruptNumber_) {
+    this->interruptNumber = interruptNumber_;
+    this->interruptManager = interruptManager_;
+    interruptManager->handlers[interruptNumber_] = this;
+}
+
+InterruptHandler::~InterruptHandler() {
+    if(interruptManager->handlers[interruptNumber] == this)
+        interruptManager->handlers[interruptNumber] = 0;
+}
+
+uint32_t InterruptHandler::HandleInterrupt(uint32_t esp) {
+    return esp;
+}
+
 
 InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256];
 InterruptManager* InterruptManager::activeInterruptManager = 0;
@@ -11,7 +29,6 @@ void InterruptManager::setInterruptDescriptorTableEntry(
     uint8_t descriptorPrivilegeLevel_,
     uint8_t descriptorType_
     ) {
-  constexpr uint8_t IDT_DESC_PRESENT = 0x80;
 
   interruptDescriptorTable[interruptNumber_].handlerAddressLowBits =
     ((uint32_t)handler) & 0xFFFF;
@@ -19,23 +36,33 @@ void InterruptManager::setInterruptDescriptorTableEntry(
     ((uint32_t)handler >> 16) & 0xFFFF;
   interruptDescriptorTable[interruptNumber_].GDT_codeSegmentSelector =
     codeSegmentSelectorOffset_;
-  interruptDescriptorTable[interruptNumber_].permissions =
-    IDT_DESC_PRESENT | descriptorType_ | ((descriptorPrivilegeLevel_ & 3) << 5);
+
+  const uint8_t IDT_DESC_PRESENT = 0x80;
+  interruptDescriptorTable[interruptNumber_].access =
+    IDT_DESC_PRESENT | ((descriptorPrivilegeLevel_ & 3) << 5) | descriptorType_;
   interruptDescriptorTable[interruptNumber_].reserved = 0;
 }
 
-InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_):
+InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset,
+    GlobalDescriptorTable* gdt_):
   programmableInterruptControllerMasterCommandPort(0x20),
   programmableInterruptControllerMasterDataPort(0x21),
   programmableInterruptControllerSlaveCommandPort(0xA0),
   programmableInterruptControllerSlaveDataPort(0xA1) {
-  uint16_t codeSegment = gdt_->CodeSegmentSelector();
-  constexpr uint8_t IDT_INTERRUPT_GATE = 0xE;
 
+  this->hardwareInterruptOffset_ = hardwareInterruptOffset;
+  uint32_t codeSegment = gdt_->CodeSegmentSelector();
+
+  const uint8_t IDT_INTERRUPT_GATE = 0xE;
   for(uint8_t i = 255; i > 0; --i) {
     setInterruptDescriptorTableEntry(i, codeSegment, &ignoreInterrupt, 0,
         IDT_INTERRUPT_GATE);
+    handlers[i] = 0;
   }
+
+  setInterruptDescriptorTableEntry(0, codeSegment, &ignoreInterrupt, 0,
+      IDT_INTERRUPT_GATE);
+  handlers[0] = 0;
 
   setInterruptDescriptorTableEntry(0x00, codeSegment, &handleException0x00, 0,
       IDT_INTERRUPT_GATE);
@@ -114,8 +141,9 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_):
   programmableInterruptControllerMasterCommandPort.write(0x11);
   programmableInterruptControllerSlaveCommandPort.write(0x11);
 
-  programmableInterruptControllerMasterDataPort.write(0x20);
-  programmableInterruptControllerSlaveDataPort.write(0x28);
+  programmableInterruptControllerMasterDataPort.write(hardwareInterruptOffset);
+  programmableInterruptControllerSlaveDataPort.write(hardwareInterruptOffset +
+      8);
 
   programmableInterruptControllerMasterDataPort.write(0x04);
   programmableInterruptControllerSlaveDataPort.write(0x02);
@@ -133,7 +161,13 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_):
   asm volatile("lidt %0" : : "m" (idt));
 }
 
-InterruptManager::~InterruptManager() {}
+InterruptManager::~InterruptManager() {
+  deactivate();
+}
+
+uint16_t InterruptManager::hardwareInterruptOffset() {
+  return hardwareInterruptOffset_;
+}
 
 void InterruptManager::activate() {
   if (activeInterruptManager != 0) {
@@ -159,14 +193,23 @@ uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber_,
 
 uint32_t InterruptManager::doHandleInterrupt(uint8_t interruptNumber_,
     uint32_t esp_) {
-  char *ch = (char*)interruptNumber_;
-  printf(ch);
-  printf("INTERRUPT");
-  if (0x20 <= interruptNumber_ && interruptNumber_ < 0x50) {
+
+  if (handlers[interruptNumber_] != 0) {
+    esp_ = handlers[interruptNumber_]->HandleInterrupt(esp_);
+  } else if (interruptNumber_ != hardwareInterruptOffset_) {
+    char *foo = "UNHANDLED INTERRUPT 0x00";
+    char *hex = "0123456789ABCDEF";
+    foo[22] = hex[(interruptNumber_ >> 4) & 0xF];
+    foo[23] = hex[interruptNumber_ & 0xF];
+    printf(foo);
+  }
+
+  // hardware interrupts must be acknowledged
+  if (hardwareInterruptOffset_ <= interruptNumber_ &&
+      interruptNumber_ < hardwareInterruptOffset_ + 16) {
     programmableInterruptControllerMasterCommandPort.write(0x20);
-    if (0x28 <= interruptNumber_) {
+    if (hardwareInterruptOffset_ + 8 <= interruptNumber_)
       programmableInterruptControllerSlaveCommandPort.write(0x20);
-    }
   }
   return esp_;
 }

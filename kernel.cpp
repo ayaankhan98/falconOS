@@ -2,6 +2,7 @@
 #include "gdt.h"
 #include "interrupt.h"
 #include "streamio.h"
+#include "keyboard.h"
 
 typedef void (*constructor)();
 
@@ -22,8 +23,9 @@ extern "C" void kernelMain(void* multiboot_structure,
   log("Starting Kernel", logLevel::INFO);
   GlobalDescriptorTable gdt;
   log("Initiated global descriptor table", logLevel::INFO);
-  InterruptManager interruptManager(&gdt);
+  InterruptManager interruptManager(0x20, &gdt);
   log("Initiated Interrupt Descriptor Table", logLevel::INFO);
+  KeyboardDriver keyboard(&interruptManager);
   interruptManager.activate();
   log("Activated Interrupt SERVICE", logLevel::INFO);
   log("All task done", logLevel::INFO);
