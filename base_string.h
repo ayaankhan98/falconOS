@@ -1,5 +1,5 @@
-#ifndef __UTILITIES_H
-#define __UTILITIES_H
+#ifndef __BASE_STRING_H
+#define __BASE_STRING_H
 
 #include "types.h"
 

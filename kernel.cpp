@@ -3,6 +3,7 @@
 #include "interrupt.h"
 #include "streamio.h"
 #include "keyboard.h"
+#include "base_string.h"
 
 typedef void (*constructor)();
 
@@ -29,5 +30,8 @@ extern "C" void kernelMain(void* multiboot_structure,
   interruptManager.activate();
   log("Activated Interrupt SERVICE", logLevel::INFO);
   log("All task done", logLevel::INFO);
+
+  printf(to_string(128));
+
   while(1);
 }
