@@ -2,6 +2,8 @@
 #include "streamio.h"
 #include "base_string.h"
 
+uint8_t inversion[screen::COLUMNS][screen::ROWS];
+
 void updateMousePointer(int8_t x, int8_t y) 
 {
     static uint16_t* videoMemory = (uint16_t*) VIDEO_MEMORY_ADDRESS;
@@ -9,6 +11,7 @@ void updateMousePointer(int8_t x, int8_t y)
     videoMemory[80 * y + x] = ((videoMemory[80 * y + x] & 0xF000) >> 4) | 
                               ((videoMemory[80 * y + x] & 0x0F00) << 4) |
                               (videoMemory[80 * y + x] & 0x00FF);
+    inversion[x][y] = !inversion[x][y];
 }
 
 MouseDriver::MouseDriver (InterruptManager* manager)
@@ -18,6 +21,10 @@ commandport(0x64)
 {
     offset = 0;
     buttons = 0;
+
+    for(uint8_t x = 0; x < screen::COLUMNS; ++x)
+      for(uint8_t y = 0; y < screen::ROWS; ++y)
+        inversion[x][y] = 0;
 
     updateMousePointer(40, 12);
 
@@ -49,18 +56,20 @@ uint32_t MouseDriver::handleInterrupt(uint32_t esp)
     
     if(offset == 0) 
     {
-      updateMousePointer(pos_x, pos_y);
+      if(!(buffer[1] == 0 && buffer[2] == 0)) {
+        if(inversion[pos_x][pos_y])
+          updateMousePointer(pos_x, pos_y);
 
-      pos_x += buffer[1];
-      if(pos_x < 0) pos_x = 0;
-      if(pos_x >= screen::COLUMNS) pos_x = screen::COLUMNS - 1;
+        pos_x += buffer[1];
+        if(pos_x < 0) pos_x = 0;
+        if(pos_x >= screen::COLUMNS) pos_x = screen::COLUMNS - 1;
 
-      pos_y -= buffer[2];
-      if(pos_y < 0) pos_y = 0;
-      if(pos_y >= screen::ROWS) pos_y = screen::ROWS - 1;
+        pos_y -= buffer[2];
+        if(pos_y < 0) pos_y = 0;
+        if(pos_y >= screen::ROWS) pos_y = screen::ROWS - 1;
       
-      updateMousePointer(pos_x, pos_y);
-
+        updateMousePointer(pos_x, pos_y);
+      }
       for(uint8_t i = 0; i < 3; ++i) 
       {
         if((buffer[0] & (0x01 << i)) != (buttons & (0x01 << i)))
