@@ -14,7 +14,7 @@ InterruptHandler::~InterruptHandler() {
         interruptManager->handlers[interruptNumber] = 0;
 }
 
-uint32_t InterruptHandler::HandleInterrupt(uint32_t esp) {
+uint32_t InterruptHandler::handleInterrupt(uint32_t esp) {
     return esp;
 }
 
@@ -195,7 +195,7 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t interruptNumber_,
     uint32_t esp_) {
 
   if (handlers[interruptNumber_] != 0) {
-    esp_ = handlers[interruptNumber_]->HandleInterrupt(esp_);
+    esp_ = handlers[interruptNumber_]->handleInterrupt(esp_);
   } else if (interruptNumber_ != hardwareInterruptOffset_) {
     char *foo = "UNHANDLED INTERRUPT 0x00";
     char *hex = "0123456789ABCDEF";
