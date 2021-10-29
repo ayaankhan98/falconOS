@@ -35,7 +35,7 @@ MouseDriver::~MouseDriver()
 {
 }
 
-uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
+uint32_t MouseDriver::handleInterrupt(uint32_t esp)
 {
     uint8_t status = commandport.read();
 
