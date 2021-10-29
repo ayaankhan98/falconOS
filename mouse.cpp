@@ -2,7 +2,7 @@
 #include "streamio.h"
 #include "base_string.h"
 
-void switch_gradient(int8_t x, int8_t y) 
+void switchColors(int8_t x, int8_t y) 
 {
     static uint16_t* videoMemory = (uint16_t*) VIDEO_MEMORY_ADDRESS;
     /// Background color is set to foreground, and vice versa
@@ -19,7 +19,7 @@ commandport(0x64)
     offset = 0;
     buttons = 0;
 
-    switch_gradient(40, 12);
+    switchColors(40, 12);
 
     commandport.write(0xa8); // activate interrupts
     commandport.write(0x20); // command 0x20 = read controller command byte
@@ -49,7 +49,7 @@ uint32_t MouseDriver::handleInterrupt(uint32_t esp)
     
     if(offset == 0) 
     {
-      switch_gradient(pos_x, pos_y);
+      switchColors(pos_x, pos_y);
 
       pos_x += buffer[1];
       if(pos_x < 0) pos_x = 0;
@@ -59,13 +59,13 @@ uint32_t MouseDriver::handleInterrupt(uint32_t esp)
       if(pos_y < 0) pos_y = 0;
       if(pos_y >= screen::ROWS) pos_y = screen::ROWS - 1;
       
-      switch_gradient(pos_x, pos_y);
+      switchColors(pos_x, pos_y);
 
       for(uint8_t i = 0; i < 3; ++i) 
       {
         if((buffer[0] & (0x01 << i)) != (buttons & (0x01 << i)))
         {
-          switch_gradient(pos_x, pos_y);
+          switchColors(pos_x, pos_y);
           int8_t temp = (buffer[0] & (0x01 << i));
           switch(temp)
           {
