@@ -18,7 +18,7 @@
     public:
         MouseDriver(InterruptManager* manager);
         ~MouseDriver();
-        virtual uint32_t HandleInterrupt(uint32_t esp);
+        virtual uint32_t handleInterrupt(uint32_t esp);
     };
 
 #endif
