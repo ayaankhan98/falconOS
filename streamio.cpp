@@ -29,9 +29,9 @@ void printf(const char* str_, const color color_) {
     if (cursorY >= screen::ROWS) {
       for(cursorY = 0; cursorY <= screen::ROWS; cursorY++) {
         for(cursorX = 0; cursorX <= screen::COLUMNS; cursorX++) {
-          videoMemory[screen::COLUMNS * cursorY + cursorX] =
+          /* videoMemory[screen::COLUMNS * cursorY + cursorX] =
             (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0x00FF) |
-            color::BLACK_ON_BLACK;
+            color::BLACK_ON_BLACK; */
           videoMemory[screen::COLUMNS * cursorY + cursorX] =
             (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0xFF00) | ' ';
         }
