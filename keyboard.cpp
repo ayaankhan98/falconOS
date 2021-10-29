@@ -2,80 +2,181 @@
 #include "keyboard.h"
 #include "streamio.h"
 
-KeyboardDriver::KeyboardDriver(InterruptManager* manager):
-    InterruptHandler(manager, 0x21), dataport(0x60), commandport(0x64) {
-    while(commandport.read() & 0x1)
-        dataport.read();
-    commandport.write(0xae); // activate interrupts
-    commandport.write(0x20); // command 0x20 = read controller command byte
-    uint8_t status = (dataport.read() | 1) & ~0x10;
-    commandport.write(0x60); // command 0x60 = set controller command byte
-    dataport.write(status);
-    dataport.write(0xf4);
+KeyboardEventHandler::KeyboardEventHandler() {
 }
 
-KeyboardDriver::~KeyboardDriver() { }
+KeyboardEventHandler::~KeyboardEventHandler() {
+}
+
+void KeyboardEventHandler::onKeyPressed(char) {
+
+}
+
+void KeyboardEventHandler::onKeyReleased(char) {
+
+}
+
+KeyboardDriver::KeyboardDriver(InterruptManager *manager,
+    KeyboardEventHandler* keyboardEventHandler)
+    : InterruptHandler(manager, 0x21), dataport(0x60), commandport(0x64) {
+      this->keyboardEventHandler = keyboardEventHandler;
+    }
+
+KeyboardDriver::~KeyboardDriver() {}
+
+void KeyboardDriver::activate() {
+  while (commandport.read() & 0x1)
+    dataport.read();
+  commandport.write(0xae); // activate interrupts
+  commandport.write(0x20); // command 0x20 = read controller command byte
+  uint8_t status = (dataport.read() | 1) & ~0x10;
+  commandport.write(0x60); // command 0x60 = set controller command byte
+  dataport.write(status);
+  dataport.write(0xf4);
+}
 
 uint32_t KeyboardDriver::handleInterrupt(uint32_t esp) {
-    uint8_t key = dataport.read();
-    if(key < 0x80) {
-        switch(key) {
-            case 0x02: printf("1"); break;
-            case 0x03: printf("2"); break;
-            case 0x04: printf("3"); break;
-            case 0x05: printf("4"); break;
-            case 0x06: printf("5"); break;
-            case 0x07: printf("6"); break;
-            case 0x08: printf("7"); break;
-            case 0x09: printf("8"); break;
-            case 0x0A: printf("9"); break;
-            case 0x0B: printf("0"); break;
+  uint8_t key = dataport.read();
 
-            case 0x10: printf("q"); break;
-            case 0x11: printf("w"); break;
-            case 0x12: printf("e"); break;
-            case 0x13: printf("r"); break;
-            case 0x14: printf("t"); break;
-            case 0x15: printf("z"); break;
-            case 0x16: printf("u"); break;
-            case 0x17: printf("i"); break;
-            case 0x18: printf("o"); break;
-            case 0x19: printf("p"); break;
-
-            case 0x1E: printf("a"); break;
-            case 0x1F: printf("s"); break;
-            case 0x20: printf("d"); break;
-            case 0x21: printf("f"); break;
-            case 0x22: printf("g"); break;
-            case 0x23: printf("h"); break;
-            case 0x24: printf("j"); break;
-            case 0x25: printf("k"); break;
-            case 0x26: printf("l"); break;
-
-            case 0x2C: printf("y"); break;
-            case 0x2D: printf("x"); break;
-            case 0x2E: printf("c"); break;
-            case 0x2F: printf("v"); break;
-            case 0x30: printf("b"); break;
-            case 0x31: printf("n"); break;
-            case 0x32: printf("m"); break;
-            case 0x33: printf(","); break;
-            case 0x34: printf("."); break;
-            case 0x35: printf("-"); break;
-
-            case 0x1C: printf("\n"); break;
-            case 0x39: printf(" "); break;
-
-            default: {
-                char* foo = "KEYBOARD 0x00 ";
-                char* hex = "0123456789ABCDEF";
-                foo[11] = hex[(key >> 4) & 0xF];
-                foo[12] = hex[key & 0xF];
-                const char* foo_ = foo;
-                printf(foo_);
-                break;
-            }
-        }
-    }
+  if (keyboardEventHandler == 0)
     return esp;
+
+  if (key < 0x80) {
+    switch (key) {
+    case 0x02:
+      keyboardEventHandler->onKeyPressed('1');
+      break;
+    case 0x03:
+      keyboardEventHandler->onKeyPressed('2');
+      break;
+    case 0x04:
+      keyboardEventHandler->onKeyPressed('3');
+      break;
+    case 0x05:
+      keyboardEventHandler->onKeyPressed('4');
+      break;
+    case 0x06:
+      keyboardEventHandler->onKeyPressed('5');
+      break;
+    case 0x07:
+      keyboardEventHandler->onKeyPressed('6');
+      break;
+    case 0x08:
+      keyboardEventHandler->onKeyPressed('7');
+      break;
+    case 0x09:
+      keyboardEventHandler->onKeyPressed('8');
+      break;
+    case 0x0A:
+      keyboardEventHandler->onKeyPressed('9');
+      break;
+    case 0x0B:
+      keyboardEventHandler->onKeyPressed('0');
+      break;
+
+    case 0x10:
+      keyboardEventHandler->onKeyPressed('q');
+      break;
+    case 0x11:
+      keyboardEventHandler->onKeyPressed('w');
+      break;
+    case 0x12:
+      keyboardEventHandler->onKeyPressed('e');
+      break;
+    case 0x13:
+      keyboardEventHandler->onKeyPressed('r');
+      break;
+    case 0x14:
+      keyboardEventHandler->onKeyPressed('t');
+      break;
+    case 0x15:
+      keyboardEventHandler->onKeyPressed('z');
+      break;
+    case 0x16:
+      keyboardEventHandler->onKeyPressed('u');
+      break;
+    case 0x17:
+      keyboardEventHandler->onKeyPressed('i');
+      break;
+    case 0x18:
+      keyboardEventHandler->onKeyPressed('o');
+      break;
+    case 0x19:
+      keyboardEventHandler->onKeyPressed('p');
+      break;
+
+    case 0x1E:
+      keyboardEventHandler->onKeyPressed('a');
+      break;
+    case 0x1F:
+      keyboardEventHandler->onKeyPressed('s');
+      break;
+    case 0x20:
+      keyboardEventHandler->onKeyPressed('d');
+      break;
+    case 0x21:
+      keyboardEventHandler->onKeyPressed('f');
+      break;
+    case 0x22:
+      keyboardEventHandler->onKeyPressed('g');
+      break;
+    case 0x23:
+      keyboardEventHandler->onKeyPressed('h');
+      break;
+    case 0x24:
+      keyboardEventHandler->onKeyPressed('j');
+      break;
+    case 0x25:
+      keyboardEventHandler->onKeyPressed('k');
+      break;
+    case 0x26:
+      keyboardEventHandler->onKeyPressed('l');
+      break;
+
+    case 0x2C:
+      keyboardEventHandler->onKeyPressed('y');
+      break;
+    case 0x2D:
+      keyboardEventHandler->onKeyPressed('x');
+      break;
+    case 0x2E:
+      keyboardEventHandler->onKeyPressed('c');
+      break;
+    case 0x2F:
+      keyboardEventHandler->onKeyPressed('v');
+      break;
+    case 0x30:
+      keyboardEventHandler->onKeyPressed('b');
+      break;
+    case 0x31:
+      keyboardEventHandler->onKeyPressed('n');
+      break;
+    case 0x32:
+      keyboardEventHandler->onKeyPressed('m');
+      break;
+    case 0x33:
+      keyboardEventHandler->onKeyPressed(',');
+      break;
+    case 0x34:
+      keyboardEventHandler->onKeyPressed('.');
+      break;
+    case 0x35:
+      keyboardEventHandler->onKeyPressed('-');
+      break;
+
+    case 0x1C:
+      keyboardEventHandler->onKeyPressed('\n');
+      break;
+    case 0x39:
+      keyboardEventHandler->onKeyPressed(' ');
+      break;
+
+    default: {
+      printf("KEYBOARD 0x");
+      printfHexa(key);
+      break;
+    }
+    }
+  }
+  return esp;
 }
