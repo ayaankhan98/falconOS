@@ -3,6 +3,7 @@
 #include "interrupt.h"
 #include "streamio.h"
 #include "keyboard.h"
+#include "mouse.h"
 
 typedef void (*constructor)();
 
@@ -26,6 +27,8 @@ extern "C" void kernelMain(void* multiboot_structure,
   InterruptManager interruptManager(0x20, &gdt);
   log("Initiated Interrupt Descriptor Table", logLevel::INFO);
   KeyboardDriver keyboard(&interruptManager);
+  MouseDriver mouse(&interruptManager);
+
   interruptManager.activate();
   log("Activated Interrupt SERVICE", logLevel::INFO);
   log("All task done", logLevel::INFO);
