@@ -5,7 +5,6 @@
 #include "port.h"
 #include "gdt.h"
 
-
 class InterruptManager;
 
 class InterruptHandler {
@@ -16,7 +15,7 @@ class InterruptHandler {
     ~InterruptHandler();
 
   public:
-    virtual uint32_t HandleInterrupt(uint32_t esp);
+    virtual uint32_t handleInterrupt(uint32_t esp);
 };
 
 class InterruptManager {

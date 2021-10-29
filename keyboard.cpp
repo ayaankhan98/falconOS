@@ -2,11 +2,8 @@
 #include "keyboard.h"
 #include "streamio.h"
 
-KeyboardDriver::KeyboardDriver(InterruptManager* manager)
-: InterruptHandler(manager, 0x21),
-dataport(0x60),
-commandport(0x64)
-{
+KeyboardDriver::KeyboardDriver(InterruptManager* manager):
+    InterruptHandler(manager, 0x21), dataport(0x60), commandport(0x64) {
     while(commandport.read() & 0x1)
         dataport.read();
     commandport.write(0xae); // activate interrupts
@@ -17,19 +14,12 @@ commandport(0x64)
     dataport.write(0xf4);
 }
 
-KeyboardDriver::~KeyboardDriver()
-{
-}
+KeyboardDriver::~KeyboardDriver() { }
 
-void printf(char*);
-
-uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
-{
+uint32_t KeyboardDriver::handleInterrupt(uint32_t esp) {
     uint8_t key = dataport.read();
-    if(key < 0x80)
-    {
-        switch(key)
-        {
+    if(key < 0x80) {
+        switch(key) {
             case 0x02: printf("1"); break;
             case 0x03: printf("2"); break;
             case 0x04: printf("3"); break;
@@ -76,8 +66,7 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
             case 0x1C: printf("\n"); break;
             case 0x39: printf(" "); break;
 
-            default:
-            {
+            default: {
                 char* foo = "KEYBOARD 0x00 ";
                 char* hex = "0123456789ABCDEF";
                 foo[11] = hex[(key >> 4) & 0xF];
