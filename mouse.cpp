@@ -1,4 +1,3 @@
-
 #include "mouse.h"
 #include "streamio.h"
 #include "base_string.h"
@@ -6,13 +5,10 @@
 void switch_gradient(int8_t x, int8_t y) 
 {
     static uint16_t* videoMemory = (uint16_t*) VIDEO_MEMORY_ADDRESS;
-
     /// Background color is set to foreground, and vice versa
-
     videoMemory[80 * y + x] = ((videoMemory[80 * y + x] & 0xF000) >> 4) | 
                               ((videoMemory[80 * y + x] & 0x0F00) << 4) |
                               (videoMemory[80 * y + x] & 0x00FF);
-
 }
 
 MouseDriver::MouseDriver (InterruptManager* manager)
@@ -91,14 +87,3 @@ uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
 
     return esp;
 }
-
-
-
-
-
-
-
-
-
-
-

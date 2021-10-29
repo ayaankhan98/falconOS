@@ -28,7 +28,6 @@ extern "C" void kernelMain(void* multiboot_structure,
   log("Initiated Interrupt Descriptor Table", logLevel::INFO);
   KeyboardDriver keyboard(&interruptManager);
   MouseDriver mouse(&interruptManager);
-
   interruptManager.activate();
   log("Activated Interrupt SERVICE", logLevel::INFO);
   log("All task done", logLevel::INFO);
