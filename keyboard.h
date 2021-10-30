@@ -1,17 +1,31 @@
 #ifndef __KEYBOARD_H
 #define __KEYBOARD_H
 
-    #include "types.h"
-    #include "interrupt.h"
-    #include "port.h"
+#include "drivers.h"
+#include "interrupt.h"
+#include "port.h"
+#include "types.h"
 
-    class KeyboardDriver : public InterruptHandler {
-        Port8Bit dataport;
-        Port8Bit commandport;
-    public:
-        KeyboardDriver(InterruptManager* manager);
-        ~KeyboardDriver();
-        virtual uint32_t handleInterrupt(uint32_t esp);
-    };
+class KeyboardEventHandler {
+  public:
+    KeyboardEventHandler();
+    ~KeyboardEventHandler();
+
+    virtual void onKeyPressed(char);
+    virtual void onKeyReleased(char);
+};
+
+class KeyboardDriver : public InterruptHandler, public DeviceDriver {
+  Port8Bit dataport;
+  Port8Bit commandport;
+
+  KeyboardEventHandler* keyboardEventHandler;
+public:
+  KeyboardDriver(InterruptManager *manager,
+      KeyboardEventHandler* keyboardEventHandler);
+  ~KeyboardDriver();
+  virtual uint32_t handleInterrupt(uint32_t esp);
+  virtual void activate();
+};
 
 #endif

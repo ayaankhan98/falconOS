@@ -1,9 +1,10 @@
-#include "types.h"
+#include "drivers.h"
 #include "gdt.h"
 #include "interrupt.h"
-#include "streamio.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "streamio.h"
+#include "types.h"
 
 typedef void (*constructor)();
 
@@ -15,21 +16,38 @@ extern "C" constructor end_ctors;
 
 /// call all global objects
 extern "C" void callConstructors() {
-  for(constructor* i = &start_ctors; i != &end_ctors; ++i)(*i)();
+  for (constructor *i = &start_ctors; i != &end_ctors; ++i)
+    (*i)();
 }
 
+class PrintKeyBoardEventHandler: public KeyboardEventHandler {
+  public:
+    void onKeyPressed(char ch) {
+      char* foo = " ";
+      foo[0] = ch;
+      printf(foo);
+    }
+};
+
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
-extern "C" void kernelMain(void* multiboot_structure,
-    uint32_t magicnumber) {
-  log("Starting Kernel", logLevel::INFO);
+extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
+  log("Booting Kernel", logLevel::INFO);
+  log("Initiating Hardware Stage 1", logLevel::INFO);
   GlobalDescriptorTable gdt;
-  log("Initiated global descriptor table", logLevel::INFO);
   InterruptManager interruptManager(0x20, &gdt);
-  log("Initiated Interrupt Descriptor Table", logLevel::INFO);
-  KeyboardDriver keyboard(&interruptManager);
+  DeviceDriverManager deviceDriverManager;
+
+  PrintKeyBoardEventHandler keyboardEventHandler;
+  KeyboardDriver keyboard(&interruptManager, &keyboardEventHandler);
+  deviceDriverManager.registerDeviceDriver(&keyboard);
+
   MouseDriver mouse(&interruptManager);
+  deviceDriverManager.registerDeviceDriver(&mouse);
+
+  log("Initiating Hardware Stage 2", logLevel::INFO);
+  deviceDriverManager.activateAll();
+  log("Initiating Hardware Stage 3", logLevel::INFO);
   interruptManager.activate();
-  log("Activated Interrupt SERVICE", logLevel::INFO);
-  log("All task done", logLevel::INFO);
-  while(1);
+  while (1)
+    ;
 }
