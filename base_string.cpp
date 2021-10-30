@@ -1,42 +1,37 @@
 #include "base_string.h"
 
-uint8_t len(char* str_) {
-
+uint8_t len(char *str_) {
   uint8_t length;
-  for(length = 0; str_[length] != '\0'; ++length);
+  for (length = 0; str_[length] != '\0'; ++length)
+    ;
 
   return length;
-
 }
 
-char* reverse(char* str_) {
-
+char *reverse(char *str_) {
   uint8_t n = len(str_);
-  char* temp;
-  for(uint8_t i=0; i<n; ++i) {
-    temp[i] = str_[n-i-1];
+  char *temp;
+  for (uint8_t i = 0; i < n; ++i) {
+    temp[i] = str_[n - i - 1];
   }
   temp[n] = '\0';
   str_ = temp;
   return str_;
-
 }
 
-
-char* to_string(const uint8_t int_) {
-
+char *to_string(const uint8_t int_) {
   uint8_t length;
   uint8_t temp = int_;
-  for(length = 0; temp != 0; temp /= 10, ++length);
+  for (length = 0; temp != 0; temp /= 10, ++length)
+    ;
 
-  char* str_;
+  char *str_;
   temp = int_;
 
-  for(int i=0; i<length; temp /= 10, ++i) {
-    str_[i] = temp%10 + '0';
+  for (int i = 0; i < length; temp /= 10, ++i) {
+    str_[i] = temp % 10 + '0';
   }
   str_[length] = '\0';
 
   return reverse(str_);
-
 }

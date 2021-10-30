@@ -1,4 +1,4 @@
-objects = loader.o kernel.o gdt.o port.o interrupt_stubs.o interrupt.o streamio.o keyboard.o mouse.o base_string.o
+objects = loader.o kernel.o drivers.o gdt.o port.o interrupt_stubs.o interrupt.o streamio.o keyboard.o mouse.o base_string.o
 
 %.o: %.cpp
 	g++ -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -fpermissive -o $@ -c $< -g
