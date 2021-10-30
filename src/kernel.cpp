@@ -6,12 +6,14 @@
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <resources/dynamic_memory_management.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
 using namespace falconOS::hardware_interaction;
 using namespace falconOS::drivers;
 using namespace falconOS;
+using namespace falconOS::resources::memory;
 
 typedef void (*constructor)();
 
@@ -110,6 +112,33 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   log("Initiating Hardware Stage 1", logLevel::INFO);
   GlobalDescriptorTable gdt;
   InterruptManager interruptManager(0x20, &gdt);
+
+  uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
+  size_t heap = 10 * 1024 * 1024;
+  MemoryManager memoryManager(heap, (*memupper) * 1024 - heap - 10 * 1024);
+
+  printf("heap: 0x");
+  printfHexa((heap >> 24) & 0xFF);
+  printfHexa((heap >> 16) & 0xFF);
+  printfHexa((heap >> 8) & 0xFF);
+  printfHexa((heap)&0xFF);
+
+  void *allocated = memoryManager.malloc(2048);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated >> 24) & 0xFF);
+  printfHexa(((size_t)allocated >> 16) & 0xFF);
+  printfHexa(((size_t)allocated >> 8) & 0xFF);
+  printfHexa(((size_t)allocated) & 0xFF);
+  printf("\n");
+
+  void *allocated2 = memoryManager.malloc(1024);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated2 >> 24) & 0xFF);
+  printfHexa(((size_t)allocated2 >> 16) & 0xFF);
+  printfHexa(((size_t)allocated2 >> 8) & 0xFF);
+  printfHexa(((size_t)allocated2) & 0xFF);
+  printf("\n");
+
   DeviceDriverManager deviceDriverManager;
 
   PrintKeyBoardEventHandler keyboardEventHandler;
