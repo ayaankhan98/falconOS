@@ -1,8 +1,8 @@
 #include <gdt.h>
 
-using namespace fineOS::core::types;
+using namespace falconOS::core::types;
 
-fineOS::GlobalDescriptorTable::GlobalDescriptorTable()
+falconOS::GlobalDescriptorTable::GlobalDescriptorTable()
     : nullSegmentSelector(0, 0, 0), unusedSegmentSelector(0, 0, 0),
       codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A),
       dataSegmentSelector(0, 64 * 1024 * 1024, 0x92) {
@@ -18,17 +18,17 @@ fineOS::GlobalDescriptorTable::GlobalDescriptorTable()
   asm volatile("lgdt (%0)" : : "p"(((uint8_t *)i) + 2));
 }
 
-fineOS::GlobalDescriptorTable::~GlobalDescriptorTable() {}
+falconOS::GlobalDescriptorTable::~GlobalDescriptorTable() {}
 
-uint16_t fineOS::GlobalDescriptorTable::DataSegmentSelector() {
+uint16_t falconOS::GlobalDescriptorTable::DataSegmentSelector() {
   return (uint8_t *)&dataSegmentSelector - (uint8_t *)this;
 }
 
-uint16_t fineOS::GlobalDescriptorTable::CodeSegmentSelector() {
+uint16_t falconOS::GlobalDescriptorTable::CodeSegmentSelector() {
   return (uint8_t *)&codeSegmentSelector - (uint8_t *)this;
 }
 
-fineOS::GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(
+falconOS::GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(
     uint32_t base, uint32_t limit, uint8_t flags) {
   uint8_t *target = (uint8_t *)this;
 
@@ -67,7 +67,7 @@ fineOS::GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(
   target[5] = flags;
 }
 
-uint32_t fineOS::GlobalDescriptorTable::SegmentDescriptor::Base() {
+uint32_t falconOS::GlobalDescriptorTable::SegmentDescriptor::Base() {
   uint8_t *target = (uint8_t *)this;
 
   uint32_t result =
@@ -76,7 +76,7 @@ uint32_t fineOS::GlobalDescriptorTable::SegmentDescriptor::Base() {
   return result;
 }
 
-uint32_t fineOS::GlobalDescriptorTable::SegmentDescriptor::Limit() {
+uint32_t falconOS::GlobalDescriptorTable::SegmentDescriptor::Limit() {
   uint8_t *target = (uint8_t *)this;
 
   uint32_t result = (target[6] & 0xF);

@@ -2,9 +2,9 @@
 #include <core/streamio.h>
 #include <drivers/keyboard.h>
 
-using namespace fineOS::drivers;
-using namespace fineOS::core::types;
-using namespace fineOS::core;
+using namespace falconOS::drivers;
+using namespace falconOS::core::types;
+using namespace falconOS::core;
 
 KeyboardEventHandler::KeyboardEventHandler() {}
 
@@ -15,7 +15,7 @@ void KeyboardEventHandler::onKeyPressed(char) {}
 void KeyboardEventHandler::onKeyReleased(char) {}
 
 KeyboardDriver::KeyboardDriver(
-    fineOS::hardware_interaction::InterruptManager *manager,
+    falconOS::hardware_interaction::InterruptManager *manager,
     KeyboardEventHandler *keyboardEventHandler)
     : InterruptHandler(manager, 0x21), dataPort(0x60), commandPort(0x64) {
   this->keyboardEventHandler = keyboardEventHandler;

@@ -1,8 +1,8 @@
 #include <core/base_string.h>
 
-using namespace fineOS::core::types;
+using namespace falconOS::core::types;
 
-namespace fineOS {
+namespace falconOS {
 namespace core {
 uint8_t len(char *str_) {
   uint8_t length;
@@ -13,7 +13,7 @@ uint8_t len(char *str_) {
 }
 
 char *reverse(char *str_) {
-  uint8_t n = fineOS::core::len(str_);
+  uint8_t n = falconOS::core::len(str_);
   char *temp;
   for (uint8_t i = 0; i < n; ++i) {
     temp[i] = str_[n - i - 1];
@@ -37,7 +37,7 @@ char *to_string(const uint8_t int_) {
   }
   str_[length] = '\0';
 
-  return fineOS::core::reverse(str_);
+  return falconOS::core::reverse(str_);
 }
 } // namespace core
-} // namespace fineOS
+} // namespace falconOS

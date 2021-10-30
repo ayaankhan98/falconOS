@@ -1,7 +1,7 @@
 #include <hardware_interaction/port.h>
 
-using namespace fineOS::hardware_interaction;
-using namespace fineOS::core::types;
+using namespace falconOS::hardware_interaction;
+using namespace falconOS::core::types;
 
 Port::Port(uint16_t portNumber_) : portNumber(portNumber_) {}
 

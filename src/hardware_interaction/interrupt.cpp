@@ -3,9 +3,9 @@
 #include <core/streamio.h>
 #include <core/types.h>
 
-using namespace fineOS::hardware_interaction;
-using namespace fineOS::core::types;
-using namespace fineOS::core;
+using namespace falconOS::hardware_interaction;
+using namespace falconOS::core::types;
+using namespace falconOS::core;
 
 InterruptHandler::InterruptHandler(InterruptManager *interruptManager_,
                                    uint8_t interruptNumber_) {
@@ -44,7 +44,7 @@ void InterruptManager::setInterruptDescriptorTableEntry(
 }
 
 InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset,
-                                   fineOS::GlobalDescriptorTable *gdt_)
+                                   falconOS::GlobalDescriptorTable *gdt_)
     : programmableInterruptControllerMasterCommandPort(0x20),
       programmableInterruptControllerMasterDataPort(0x21),
       programmableInterruptControllerSlaveCommandPort(0xA0),

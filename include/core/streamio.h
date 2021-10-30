@@ -2,7 +2,7 @@
 
 #include <core/types.h>
 
-namespace fineOS {
+namespace falconOS {
 namespace core {
 #define VIDEO_MEMORY_ADDRESS 0xB8000
 
@@ -48,4 +48,4 @@ char *reverse(char *str_);
 
 char *to_string(const types::uint8_t int_);
 } // namespace core
-} // namespace fineOS
+} // namespace falconOS

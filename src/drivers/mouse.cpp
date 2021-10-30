@@ -2,8 +2,8 @@
 #include <core/streamio.h>
 #include <drivers/mouse.h>
 
-using namespace fineOS::drivers;
-using namespace fineOS::core::types;
+using namespace falconOS::drivers;
+using namespace falconOS::core::types;
 
 MouseEventHandler::MouseEventHandler() {}
 
@@ -18,7 +18,7 @@ void MouseEventHandler::onMouseButtonReleased(uint8_t) {}
 void MouseEventHandler::onMouseMove(int8_t x, int8_t y) {}
 
 MouseDriver::MouseDriver(
-    fineOS::hardware_interaction::InterruptManager *manager,
+    falconOS::hardware_interaction::InterruptManager *manager,
     MouseEventHandler *mouseEventHandler)
     : InterruptHandler(manager, 0x2c), dataPort(0x60), commandPort(0x64) {
   this->mouseEventHandler = mouseEventHandler;

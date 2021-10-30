@@ -3,8 +3,8 @@
 #include <core/base_string.h>
 #include <core/streamio.h>
 
-using namespace fineOS::drivers;
-using namespace fineOS::core::types;
+using namespace falconOS::drivers;
+using namespace falconOS::core::types;
 
 DeviceDriver::DeviceDriver() {}
 

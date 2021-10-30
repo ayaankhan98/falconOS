@@ -6,11 +6,11 @@
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 
-using namespace fineOS::core::types;
-using namespace fineOS::core;
-using namespace fineOS::hardware_interaction;
-using namespace fineOS::drivers;
-using namespace fineOS;
+using namespace falconOS::core::types;
+using namespace falconOS::core;
+using namespace falconOS::hardware_interaction;
+using namespace falconOS::drivers;
+using namespace falconOS;
 
 typedef void (*constructor)();
 

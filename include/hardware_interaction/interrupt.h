@@ -4,21 +4,21 @@
 #include <gdt.h>
 #include <hardware_interaction/port.h>
 
-namespace fineOS {
+namespace falconOS {
 namespace hardware_interaction {
 class InterruptManager;
 
 class InterruptHandler {
 protected:
-  fineOS::core::types::uint8_t interruptNumber;
+  falconOS::core::types::uint8_t interruptNumber;
   InterruptManager *interruptManager;
   InterruptHandler(InterruptManager *interruptManager,
-                   fineOS::core::types::uint8_t InterruptNumber);
+                   falconOS::core::types::uint8_t InterruptNumber);
   ~InterruptHandler();
 
 public:
-  virtual fineOS::core::types::uint32_t
-  handleInterrupt(fineOS::core::types::uint32_t esp);
+  virtual falconOS::core::types::uint32_t
+  handleInterrupt(falconOS::core::types::uint32_t esp);
 };
 
 class InterruptManager {
@@ -30,27 +30,28 @@ protected:
 
   /// an entry in Interrupt descriptor table is known as gate descriptor
   struct GateDescriptor {
-    fineOS::core::types::uint16_t handlerAddressLowBits;
-    fineOS::core::types::uint16_t GDT_codeSegmentSelector;
-    fineOS::core::types::uint8_t reserved;
-    fineOS::core::types::uint8_t access;
-    fineOS::core::types::uint16_t handlerAddressHighBits;
+    falconOS::core::types::uint16_t handlerAddressLowBits;
+    falconOS::core::types::uint16_t GDT_codeSegmentSelector;
+    falconOS::core::types::uint8_t reserved;
+    falconOS::core::types::uint8_t access;
+    falconOS::core::types::uint16_t handlerAddressHighBits;
   } __attribute__((packed));
 
   static GateDescriptor interruptDescriptorTable[256];
 
   struct InterruptDescriptorTablePointer {
-    fineOS::core::types::uint16_t size;
-    fineOS::core::types::uint32_t base;
+    falconOS::core::types::uint16_t size;
+    falconOS::core::types::uint32_t base;
   } __attribute__((packed));
 
-  fineOS::core::types::uint16_t hardwareInterruptOffset_;
+  falconOS::core::types::uint16_t hardwareInterruptOffset_;
 
   static void setInterruptDescriptorTableEntry(
-      fineOS::core::types::uint8_t interruptNumber_,
-      fineOS::core::types::uint16_t codeSegmentSelectorOffset_,
-      void (*handler)(), fineOS::core::types::uint8_t descriptorPrivilegeLevel_,
-      fineOS::core::types::uint8_t descriptorType_);
+      falconOS::core::types::uint8_t interruptNumber_,
+      falconOS::core::types::uint16_t codeSegmentSelectorOffset_,
+      void (*handler)(),
+      falconOS::core::types::uint8_t descriptorPrivilegeLevel_,
+      falconOS::core::types::uint8_t descriptorType_);
 
   static void ignoreInterrupt();
 
@@ -93,12 +94,12 @@ protected:
   static void handleException0x12();
   static void handleException0x13();
 
-  static fineOS::core::types::uint32_t
-  handleInterrupt(fineOS::core::types::uint8_t interruptNumber_,
-                  fineOS::core::types::uint32_t esp_);
-  fineOS::core::types::uint32_t
-  doHandleInterrupt(fineOS::core::types::uint8_t interruptNumber_,
-                    fineOS::core::types::uint32_t esp_);
+  static falconOS::core::types::uint32_t
+  handleInterrupt(falconOS::core::types::uint8_t interruptNumber_,
+                  falconOS::core::types::uint32_t esp_);
+  falconOS::core::types::uint32_t
+  doHandleInterrupt(falconOS::core::types::uint8_t interruptNumber_,
+                    falconOS::core::types::uint32_t esp_);
 
   Port8BitSlow programmableInterruptControllerMasterCommandPort;
   Port8BitSlow programmableInterruptControllerMasterDataPort;
@@ -106,13 +107,13 @@ protected:
   Port8BitSlow programmableInterruptControllerSlaveDataPort;
 
 public:
-  InterruptManager(fineOS::core::types::uint16_t hardwareInterruptOffset,
+  InterruptManager(falconOS::core::types::uint16_t hardwareInterruptOffset,
                    GlobalDescriptorTable *gdt_);
   ~InterruptManager();
-  fineOS::core::types::uint16_t hardwareInterruptOffset();
+  falconOS::core::types::uint16_t hardwareInterruptOffset();
   void activate();
   void deactivate();
 };
 
 } // namespace hardware_interaction
-} // namespace fineOS
+} // namespace falconOS

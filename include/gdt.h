@@ -2,7 +2,7 @@
 
 #include <core/types.h>
 
-namespace fineOS {
+namespace falconOS {
 class GlobalDescriptorTable {
 private:
   class SegmentDescriptor {
@@ -15,19 +15,19 @@ private:
      *
      */
   private:
-    fineOS::core::types::uint16_t limit_lo;
-    fineOS::core::types::uint16_t base_lo;
-    fineOS::core::types::uint8_t base_hi;
-    fineOS::core::types::uint8_t type;
-    fineOS::core::types::uint8_t flags_limit_hi;
-    fineOS::core::types::uint8_t base_vhi;
+    falconOS::core::types::uint16_t limit_lo;
+    falconOS::core::types::uint16_t base_lo;
+    falconOS::core::types::uint8_t base_hi;
+    falconOS::core::types::uint8_t type;
+    falconOS::core::types::uint8_t flags_limit_hi;
+    falconOS::core::types::uint8_t base_vhi;
 
   public:
-    SegmentDescriptor(fineOS::core::types::uint32_t base,
-                      fineOS::core::types::uint32_t limit,
-                      fineOS::core::types::uint8_t type);
-    fineOS::core::types::uint32_t Base();
-    fineOS::core::types::uint32_t Limit();
+    SegmentDescriptor(falconOS::core::types::uint32_t base,
+                      falconOS::core::types::uint32_t limit,
+                      falconOS::core::types::uint8_t type);
+    falconOS::core::types::uint32_t Base();
+    falconOS::core::types::uint32_t Limit();
   } __attribute__((packed));
 
   SegmentDescriptor nullSegmentSelector;
@@ -40,9 +40,9 @@ public:
   ~GlobalDescriptorTable();
 
   /// returns the address to the code segment selector
-  fineOS::core::types::uint16_t CodeSegmentSelector();
+  falconOS::core::types::uint16_t CodeSegmentSelector();
 
   /// returns the address to the data segment selector
-  fineOS::core::types::uint16_t DataSegmentSelector();
+  falconOS::core::types::uint16_t DataSegmentSelector();
 };
-} // namespace fineOS
+} // namespace falconOS

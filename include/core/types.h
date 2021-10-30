@@ -1,6 +1,6 @@
 #pragma once
 
-namespace fineOS {
+namespace falconOS {
 namespace core {
 namespace types {
 typedef char int8_t;
@@ -16,4 +16,4 @@ typedef long long int64_t;
 typedef unsigned long long uint64_t;
 } // namespace types
 } // namespace core
-} // namespace fineOS
+} // namespace falconOS

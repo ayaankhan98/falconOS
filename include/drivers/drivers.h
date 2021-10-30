@@ -2,7 +2,7 @@
 
 #include <core/types.h>
 
-namespace fineOS {
+namespace falconOS {
 namespace drivers {
 class DeviceDriver {
 public:
@@ -17,7 +17,7 @@ public:
 class DeviceDriverManager {
 private:
   DeviceDriver *drivers[256];
-  fineOS::core::types::uint8_t deviceDriverId;
+  falconOS::core::types::uint8_t deviceDriverId;
 
 public:
   DeviceDriverManager();
@@ -26,4 +26,4 @@ public:
   void activateAll();
 };
 } // namespace drivers
-} // namespace fineOS
+} // namespace falconOS

@@ -1,8 +1,8 @@
 #include <core/streamio.h>
 
-using namespace fineOS::core::types;
+using namespace falconOS::core::types;
 
-namespace fineOS {
+namespace falconOS {
 namespace core {
 void printf(const char *str_, const color color_) {
   static uint16_t *videoMemory = (uint16_t *)VIDEO_MEMORY_ADDRESS;
@@ -76,4 +76,4 @@ void log(const char *message_, const logLevel level_) {
   printf("\n");
 }
 } // namespace core
-} // namespace fineOS
+} // namespace falconOS
