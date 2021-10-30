@@ -104,7 +104,7 @@ class MouseToConsole: public MouseEventHandler {
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   log("Booting Kernel", logLevel::INFO);
-  log("Initiating Hardawre Stage 1", logLevel::INFO);
+  log("Initiating Hardware Stage 1", logLevel::INFO);
   GlobalDescriptorTable gdt;
   InterruptManager interruptManager(0x20, &gdt);
   DeviceDriverManager deviceDriverManager;
@@ -117,9 +117,9 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   MouseDriver mouse(&interruptManager, &mouseEventHandler);
   deviceDriverManager.registerDeviceDriver(&mouse);
 
-  log("Initiating Hardawre Stage 2", logLevel::INFO);
+  log("Initiating Hardware Stage 2", logLevel::INFO);
   deviceDriverManager.activateAll();
-  log("Initiating Hardawre Stage 3", logLevel::INFO);
+  log("Initiating Hardware Stage 3", logLevel::INFO);
   interruptManager.activate();
   while (1)
     ;
