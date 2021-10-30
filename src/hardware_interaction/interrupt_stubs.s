@@ -2,18 +2,18 @@
 
 .section .text
 
-.extern _ZN6falconOS20hardware_interaction16InterruptManager15handleInterruptEhj
+.extern _ZN8falconOS20hardware_interaction16InterruptManager15handleInterruptEhj
 
 .macro handleException num
-.global _ZN6falconOS20hardware_interaction16InterruptManager19handleException\num\()Ev
-_ZN6falconOS20hardware_interaction16InterruptManager19handleException\num\()Ev:
+.global _ZN8falconOS20hardware_interaction16InterruptManager19handleException\num\()Ev
+_ZN8falconOS20hardware_interaction16InterruptManager19handleException\num\()Ev:
     movb $\num, (interruptnumber)
     jmp serve_interrupt
 .endm
 
 .macro handleInterruptRequest num
-.global _ZN6falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev
-_ZN6falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev:
+.global _ZN8falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev
+_ZN8falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev:
     movb $\num + IRQ_BASE, (interruptnumber)
     jmp serve_interrupt
 .endm
@@ -75,7 +75,7 @@ serve_interrupt:
     # C++ Handler aufrufen
     pushl %esp
     push (interruptnumber)
-    call _ZN6falconOS20hardware_interaction16InterruptManager15handleInterruptEhj
+    call _ZN8falconOS20hardware_interaction16InterruptManager15handleInterruptEhj
     add %esp, 6
     mov %eax, %esp # den stack wechseln
 
@@ -86,8 +86,8 @@ serve_interrupt:
     pop %ds
     popa
 
-.global _ZN6falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv
-_ZN6falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv:
+.global _ZN8falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv
+_ZN8falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv:
 
     iret
 
