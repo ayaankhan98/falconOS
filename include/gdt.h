@@ -1,8 +1,8 @@
-#ifndef __GDT_H
-#define __GDT_H
+#pragma once
 
-#include "types.h"
+#include <core/types.h>
 
+namespace falconOS {
 class GlobalDescriptorTable {
 private:
   class SegmentDescriptor {
@@ -15,17 +15,19 @@ private:
      *
      */
   private:
-    uint16_t limit_lo;
-    uint16_t base_lo;
-    uint8_t base_hi;
-    uint8_t type;
-    uint8_t flags_limit_hi;
-    uint8_t base_vhi;
+    falconOS::core::types::uint16_t limit_lo;
+    falconOS::core::types::uint16_t base_lo;
+    falconOS::core::types::uint8_t base_hi;
+    falconOS::core::types::uint8_t type;
+    falconOS::core::types::uint8_t flags_limit_hi;
+    falconOS::core::types::uint8_t base_vhi;
 
   public:
-    SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t type);
-    uint32_t Base();
-    uint32_t Limit();
+    SegmentDescriptor(falconOS::core::types::uint32_t base,
+                      falconOS::core::types::uint32_t limit,
+                      falconOS::core::types::uint8_t type);
+    falconOS::core::types::uint32_t Base();
+    falconOS::core::types::uint32_t Limit();
   } __attribute__((packed));
 
   SegmentDescriptor nullSegmentSelector;
@@ -38,10 +40,9 @@ public:
   ~GlobalDescriptorTable();
 
   /// returns the address to the code segment selector
-  uint16_t CodeSegmentSelector();
+  falconOS::core::types::uint16_t CodeSegmentSelector();
 
   /// returns the address to the data segment selector
-  uint16_t DataSegmentSelector();
+  falconOS::core::types::uint16_t DataSegmentSelector();
 };
-
-#endif
+} // namespace falconOS

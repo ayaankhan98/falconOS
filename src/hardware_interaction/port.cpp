@@ -1,4 +1,7 @@
-#include "port.h"
+#include <hardware_interaction/port.h>
+
+using namespace falconOS::hardware_interaction;
+using namespace falconOS::core::types;
 
 Port::Port(uint16_t portNumber_) : portNumber(portNumber_) {}
 

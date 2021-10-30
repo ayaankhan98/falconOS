@@ -1,42 +1,41 @@
 
-#include "keyboard.h"
-#include "streamio.h"
+#include <core/streamio.h>
+#include <drivers/keyboard.h>
 
-KeyboardEventHandler::KeyboardEventHandler() {
+using namespace falconOS::drivers;
+using namespace falconOS::core::types;
+using namespace falconOS::core;
+
+KeyboardEventHandler::KeyboardEventHandler() {}
+
+KeyboardEventHandler::~KeyboardEventHandler() {}
+
+void KeyboardEventHandler::onKeyPressed(char) {}
+
+void KeyboardEventHandler::onKeyReleased(char) {}
+
+KeyboardDriver::KeyboardDriver(
+    falconOS::hardware_interaction::InterruptManager *manager,
+    KeyboardEventHandler *keyboardEventHandler)
+    : InterruptHandler(manager, 0x21), dataPort(0x60), commandPort(0x64) {
+  this->keyboardEventHandler = keyboardEventHandler;
 }
-
-KeyboardEventHandler::~KeyboardEventHandler() {
-}
-
-void KeyboardEventHandler::onKeyPressed(char) {
-
-}
-
-void KeyboardEventHandler::onKeyReleased(char) {
-
-}
-
-KeyboardDriver::KeyboardDriver(InterruptManager *manager,
-    KeyboardEventHandler* keyboardEventHandler)
-    : InterruptHandler(manager, 0x21), dataport(0x60), commandport(0x64) {
-      this->keyboardEventHandler = keyboardEventHandler;
-    }
 
 KeyboardDriver::~KeyboardDriver() {}
 
 void KeyboardDriver::activate() {
-  while (commandport.read() & 0x1)
-    dataport.read();
-  commandport.write(0xae); // activate interrupts
-  commandport.write(0x20); // command 0x20 = read controller command byte
-  uint8_t status = (dataport.read() | 1) & ~0x10;
-  commandport.write(0x60); // command 0x60 = set controller command byte
-  dataport.write(status);
-  dataport.write(0xf4);
+  while (commandPort.read() & 0x1)
+    dataPort.read();
+  commandPort.write(0xae); // activate interrupts
+  commandPort.write(0x20); // command 0x20 = read controller command byte
+  uint8_t status = (dataPort.read() | 1) & ~0x10;
+  commandPort.write(0x60); // command 0x60 = set controller command byte
+  dataPort.write(status);
+  dataPort.write(0xf4);
 }
 
 uint32_t KeyboardDriver::handleInterrupt(uint32_t esp) {
-  uint8_t key = dataport.read();
+  uint8_t key = dataPort.read();
 
   if (keyboardEventHandler == 0)
     return esp;

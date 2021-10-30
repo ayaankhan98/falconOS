@@ -1,8 +1,9 @@
-#ifndef __STREAMIO_H
-#define __STREAMIO_H
+#pragma once
 
-#include "types.h"
+#include <core/types.h>
 
+namespace falconOS {
+namespace core {
 #define VIDEO_MEMORY_ADDRESS 0xB8000
 
 enum screen { ROWS = 25, COLUMNS = 80 };
@@ -37,8 +38,14 @@ enum logLevel {
 
 void printf(const char *str_, const color color_ = color::GRAY_ON_BLACK);
 
-void printfHexa(uint8_t hexaDigit_);
+void printfHexa(types::uint8_t hexaDigit_);
 
 void log(const char *message_, const logLevel level_ = logLevel::INFO);
 
-#endif
+types::uint8_t len(char *str_);
+
+char *reverse(char *str_);
+
+char *to_string(const types::uint8_t int_);
+} // namespace core
+} // namespace falconOS

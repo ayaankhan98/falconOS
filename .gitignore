@@ -30,4 +30,8 @@
 *.exe
 *.out
 *.app
+*.iso
 
+*.bin
+bin
+.vscode
