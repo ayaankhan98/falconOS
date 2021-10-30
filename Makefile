@@ -1,13 +1,13 @@
-objects = bin/loader.o 														\
-	  bin/kernel.o 																	\
-	  bin/gdt.o 																		\
-	  bin/drivers/drivers.o 												\
-		bin/drivers/keyboard.o 												\
-	  bin/drivers/mouse.o 													\
-	  bin/hardware_interaction/port.o 							\
-	  bin/hardware_interaction/interrupt_stubs.o 		\
+objects = bin/loader.o 								\
+	  bin/kernel.o 								\
+	  bin/gdt.o 								\
+	  bin/drivers/drivers.o 						\
+	  bin/drivers/keyboard.o 						\
+	  bin/drivers/mouse.o 							\
+	  bin/hardware_interaction/port.o 					\
+	  bin/hardware_interaction/interrupt_stubs.o 				\
 	  bin/hardware_interaction/interrupt.o 					\
-	  bin/core/streamio.o 													\
+	  bin/core/streamio.o 							\
 	  bin/core/base_string.o
 
 bin/%.o: src/%.cpp
