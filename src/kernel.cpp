@@ -5,6 +5,7 @@
 #include <drivers/mouse.h>
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
+#include <hardware_interaction/pci.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -119,6 +120,9 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   MouseDriver mouse(&interruptManager, &mouseEventHandler);
   deviceDriverManager.registerDeviceDriver(&mouse);
 
+  PeripheralComponentInterconnectController PCIController;
+  PCIController.selectDrivers(&deviceDriverManager);
+
   log("Initiating Hardware Stage 2", logLevel::INFO);
   deviceDriverManager.activateAll();
   log("Initiating Hardware Stage 3", logLevel::INFO);
@@ -126,3 +130,4 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   while (1)
     ;
 }
+
