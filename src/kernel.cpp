@@ -40,7 +40,7 @@ void updateMousePointer(int8_t pos_x, int8_t pos_y) {
 
 class PrintKeyBoardEventHandler : public KeyboardEventHandler {
 public:
-  void onKeyPressed(char ch) {
+  void onKeyPressed(char ch) override {
     char *foo = " ";
     foo[0] = ch;
     printf(foo);
@@ -52,14 +52,14 @@ private:
   int8_t pos_x, pos_y;
 
 public:
-  void onActivate() {
+  void onActivate() override {
     pos_x = 40;
     pos_y = 12;
 
     updateMousePointer(pos_x, pos_y);
   }
 
-  void onMouseMove(int8_t offset_x, int8_t offset_y) {
+  void onMouseMove(int8_t offset_x, int8_t offset_y) override {
 
     if (inversion[pos_x][pos_y])
       updateMousePointer(pos_x, pos_y);
@@ -79,7 +79,7 @@ public:
     updateMousePointer(pos_x, pos_y);
   }
 
-  void onMouseButtonPressed(uint8_t button) {
+  void onMouseButtonPressed(uint8_t button) override {
 
     updateMousePointer(pos_x, pos_y);
 
@@ -98,7 +98,7 @@ public:
       break;
     }
   }
-  void onMouseButtonReleased(uint8_t button) {
+  void onMouseButtonReleased(uint8_t button) override {
     updateMousePointer(pos_x, pos_y);
   }
 };

@@ -18,8 +18,8 @@ public:
 
 class KeyboardDriver : public fineOS::hardware_interaction::InterruptHandler,
                        public DeviceDriver {
-  fineOS::hardware_interaction::Port8Bit dataport;
-  fineOS::hardware_interaction::Port8Bit commandport;
+  fineOS::hardware_interaction::Port8Bit dataPort;
+  fineOS::hardware_interaction::Port8Bit commandPort;
 
   KeyboardEventHandler *keyboardEventHandler;
 
