@@ -8,6 +8,7 @@ objects = bin/loader.o 								\
 	  bin/hardware_interaction/port.o 					\
 	  bin/hardware_interaction/interrupt_stubs.o 				\
 	  bin/hardware_interaction/interrupt.o 					\
+	  bin/hardware_interaction/pci.o 					\
 	  bin/core/streamio.o 							\
 	  bin/core/base_string.o
 
