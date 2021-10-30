@@ -1,7 +1,10 @@
-#include "drivers.h"
+#include <drivers/drivers.h>
 
-#include "base_string.h"
-#include "streamio.h"
+#include <core/base_string.h>
+#include <core/streamio.h>
+
+using namespace fineOS::drivers;
+using namespace fineOS::core::types;
 
 DeviceDriver::DeviceDriver() {}
 

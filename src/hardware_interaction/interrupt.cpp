@@ -1,7 +1,11 @@
-#include "interrupt.h"
+#include <hardware_interaction/interrupt.h>
 
-#include "streamio.h"
-#include "types.h"
+#include <core/streamio.h>
+#include <core/types.h>
+
+using namespace fineOS::hardware_interaction;
+using namespace fineOS::core::types;
+using namespace fineOS::core;
 
 InterruptHandler::InterruptHandler(InterruptManager *interruptManager_,
                                    uint8_t interruptNumber_) {
@@ -40,7 +44,7 @@ void InterruptManager::setInterruptDescriptorTableEntry(
 }
 
 InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset,
-                                   GlobalDescriptorTable *gdt_)
+                                   fineOS::GlobalDescriptorTable *gdt_)
     : programmableInterruptControllerMasterCommandPort(0x20),
       programmableInterruptControllerMasterDataPort(0x21),
       programmableInterruptControllerSlaveCommandPort(0xA0),

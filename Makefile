@@ -1,25 +1,38 @@
-objects = loader.o kernel.o drivers.o gdt.o port.o interrupt_stubs.o interrupt.o streamio.o keyboard.o mouse.o base_string.o
+objects = bin/loader.o 														\
+	  bin/kernel.o 																	\
+	  bin/gdt.o 																		\
+	  bin/drivers/drivers.o 												\
+		bin/drivers/keyboard.o 												\
+	  bin/drivers/mouse.o 													\
+	  bin/hardware_interaction/port.o 							\
+	  bin/hardware_interaction/interrupt_stubs.o 		\
+	  bin/hardware_interaction/interrupt.o 					\
+	  bin/core/streamio.o 													\
+	  bin/core/base_string.o
 
-%.o: %.cpp
-	g++ -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -fpermissive -o $@ -c $< -g
+bin/%.o: src/%.cpp
+	mkdir -p $(@D)
+	g++ -m32 -Iinclude -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -fpermissive -o $@ -c $< -g
 
-%.o: %.asm
+bin/%.o: src/%.asm
+	mkdir -p $(@D)
 	nasm -f elf32 -o $@ $<
 
-%.o: %.s
+bin/%.o: src/%.s
+	mkdir -p $(@D)
 	as --32 -o $@ $<
 
-run: mykernel.iso
+run: kernel.iso
 	(killall VirtualBox && sleep 1) || true
 	VirtualBox --startVM 'Minor Project' &
 
-mykernel.bin: linker.ld ${objects}
+kernel.bin: linker.ld ${objects}
 	ld -m elf_i386 -T $< -o $@ ${objects}
 
-qemu: mykernel.bin
+qemu: kernel.bin
 	qemu-system-x86_64 -kernel $<
 
-mykernel.iso: mykernel.bin
+kernel.iso: kernel.bin
 	mkdir iso
 	mkdir iso/boot
 	mkdir iso/boot/grub
@@ -28,7 +41,7 @@ mykernel.iso: mykernel.bin
 	echo 'set default=0' >> iso/boot/grub/grub.cfg
 	echo '' >> iso/boot/grub/grub.cfg
 	echo 'menuentry "My Operating System" {' >> iso/boot/grub/grub.cfg
-	echo '	multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
+	echo '	multiboot /boot/kernel.bin' >> iso/boot/grub/grub.cfg
 	echo '	boot' >> iso/boot/grub/grub.cfg
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=$@ iso
@@ -36,4 +49,4 @@ mykernel.iso: mykernel.bin
 
 .PHONY: clean
 clean:
-	rm -rf ${objects} mykernel.bin mykernel.iso
+	rm -rf bin kernel.bin kernel.iso

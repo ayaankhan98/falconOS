@@ -1,6 +1,8 @@
-#ifndef __TYPES_H
-#define __TYPES_H
+#pragma once
 
+namespace fineOS {
+namespace core {
+namespace types {
 typedef char int8_t;
 typedef unsigned char uint8_t;
 
@@ -12,5 +14,6 @@ typedef unsigned int uint32_t;
 
 typedef long long int64_t;
 typedef unsigned long long uint64_t;
-
-#endif
+} // namespace types
+} // namespace core
+} // namespace fineOS

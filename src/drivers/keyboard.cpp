@@ -1,26 +1,25 @@
 
-#include "keyboard.h"
-#include "streamio.h"
+#include <core/streamio.h>
+#include <drivers/keyboard.h>
 
-KeyboardEventHandler::KeyboardEventHandler() {
-}
+using namespace fineOS::drivers;
+using namespace fineOS::core::types;
+using namespace fineOS::core;
 
-KeyboardEventHandler::~KeyboardEventHandler() {
-}
+KeyboardEventHandler::KeyboardEventHandler() {}
 
-void KeyboardEventHandler::onKeyPressed(char) {
+KeyboardEventHandler::~KeyboardEventHandler() {}
 
-}
+void KeyboardEventHandler::onKeyPressed(char) {}
 
-void KeyboardEventHandler::onKeyReleased(char) {
+void KeyboardEventHandler::onKeyReleased(char) {}
 
-}
-
-KeyboardDriver::KeyboardDriver(InterruptManager *manager,
-    KeyboardEventHandler* keyboardEventHandler)
+KeyboardDriver::KeyboardDriver(
+    fineOS::hardware_interaction::InterruptManager *manager,
+    KeyboardEventHandler *keyboardEventHandler)
     : InterruptHandler(manager, 0x21), dataport(0x60), commandport(0x64) {
-      this->keyboardEventHandler = keyboardEventHandler;
-    }
+  this->keyboardEventHandler = keyboardEventHandler;
+}
 
 KeyboardDriver::~KeyboardDriver() {}
 

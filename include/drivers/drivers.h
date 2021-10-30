@@ -1,8 +1,9 @@
-#ifndef __DRIVERS_H
-#define __DRIVERS_H
+#pragma once
 
-#include "types.h"
+#include <core/types.h>
 
+namespace fineOS {
+namespace drivers {
 class DeviceDriver {
 public:
   DeviceDriver();
@@ -16,7 +17,7 @@ public:
 class DeviceDriverManager {
 private:
   DeviceDriver *drivers[256];
-  uint8_t deviceDriverId;
+  fineOS::core::types::uint8_t deviceDriverId;
 
 public:
   DeviceDriverManager();
@@ -24,5 +25,5 @@ public:
   void registerDeviceDriver(DeviceDriver *);
   void activateAll();
 };
-
-#endif
+} // namespace drivers
+} // namespace fineOS

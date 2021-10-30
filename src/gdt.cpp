@@ -1,6 +1,8 @@
-#include "gdt.h"
+#include <gdt.h>
 
-GlobalDescriptorTable::GlobalDescriptorTable()
+using namespace fineOS::core::types;
+
+fineOS::GlobalDescriptorTable::GlobalDescriptorTable()
     : nullSegmentSelector(0, 0, 0), unusedSegmentSelector(0, 0, 0),
       codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A),
       dataSegmentSelector(0, 64 * 1024 * 1024, 0x92) {
@@ -16,19 +18,18 @@ GlobalDescriptorTable::GlobalDescriptorTable()
   asm volatile("lgdt (%0)" : : "p"(((uint8_t *)i) + 2));
 }
 
-GlobalDescriptorTable::~GlobalDescriptorTable() {}
+fineOS::GlobalDescriptorTable::~GlobalDescriptorTable() {}
 
-uint16_t GlobalDescriptorTable::DataSegmentSelector() {
+uint16_t fineOS::GlobalDescriptorTable::DataSegmentSelector() {
   return (uint8_t *)&dataSegmentSelector - (uint8_t *)this;
 }
 
-uint16_t GlobalDescriptorTable::CodeSegmentSelector() {
+uint16_t fineOS::GlobalDescriptorTable::CodeSegmentSelector() {
   return (uint8_t *)&codeSegmentSelector - (uint8_t *)this;
 }
 
-GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base,
-                                                            uint32_t limit,
-                                                            uint8_t flags) {
+fineOS::GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(
+    uint32_t base, uint32_t limit, uint8_t flags) {
   uint8_t *target = (uint8_t *)this;
 
   /**
@@ -66,7 +67,7 @@ GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base,
   target[5] = flags;
 }
 
-uint32_t GlobalDescriptorTable::SegmentDescriptor::Base() {
+uint32_t fineOS::GlobalDescriptorTable::SegmentDescriptor::Base() {
   uint8_t *target = (uint8_t *)this;
 
   uint32_t result =
@@ -75,7 +76,7 @@ uint32_t GlobalDescriptorTable::SegmentDescriptor::Base() {
   return result;
 }
 
-uint32_t GlobalDescriptorTable::SegmentDescriptor::Limit() {
+uint32_t fineOS::GlobalDescriptorTable::SegmentDescriptor::Limit() {
   uint8_t *target = (uint8_t *)this;
 
   uint32_t result = (target[6] & 0xF);
