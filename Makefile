@@ -1,6 +1,7 @@
 objects = bin/loader.o 								\
 	  bin/kernel.o 								\
 	  bin/gdt.o 								\
+		bin/resources/dynamic_memory_management.o   \
 	  bin/drivers/drivers.o 						\
 	  bin/drivers/keyboard.o 						\
 	  bin/drivers/mouse.o 							\
