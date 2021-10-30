@@ -46,7 +46,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
   log("Initiating Hardware Stage 2", logLevel::INFO);
   deviceDriverManager.activateAll();
-  log("Initiating Hardawre Stage 3", logLevel::INFO);
+  log("Initiating Hardware Stage 3", logLevel::INFO);
   interruptManager.activate();
   while (1)
     ;
