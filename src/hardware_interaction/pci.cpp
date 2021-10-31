@@ -50,6 +50,41 @@ bool PeripheralComponentInterconnectController::deviceHasFunctions(
   return read(busNumber, deviceNumber, 0, 0x0e) & (1 << 7);
 }
 
+void PeripheralComponentInterconnectController::printPCIDevices() {
+  
+  for (uint16_t bus = 0; bus < 8; ++bus) {
+    for (uint16_t device = 0; device < 32; ++device) {
+      uint16_t numFunctions = deviceHasFunctions(bus, device) ? 8 : 1;
+      for (uint16_t function = 0; function < 8; ++function) {
+        PeripheralComponentInterconnectDeviceDescriptor getDevice =
+            getDeviceDescriptor(bus, device, function);
+
+        if (getDevice.vendorID_ == 0x0000 || getDevice.vendorID_ == 0xFFFF)
+          continue;
+  
+        printf("PCI BUS ");
+        printfHexa(bus & 0xFF);
+
+        printf(", DEVICE ");
+        printfHexa(device & 0xFF);
+
+        printf(", FUNCTION ");
+        printfHexa(function & 0xFF);
+
+        printf("= VENDOR ");
+        printfHexa((getDevice.vendorID_ & 0xFF00) >> 8);
+        printfHexa(getDevice.vendorID_ & 0xFF);
+
+        printf(", DEVICE_ID ");
+        printfHexa((getDevice.deviceID_ & 0xFF00) >> 8);
+        printfHexa(getDevice.deviceID_ & 0xFF);
+
+        printf("\n");
+      }
+    }
+  }
+}
+
 void PeripheralComponentInterconnectController::selectDrivers(
     DeviceDriverManager *driverManager, InterruptManager *interruptManager) {
 
@@ -74,28 +109,12 @@ void PeripheralComponentInterconnectController::selectDrivers(
           if (deviceDriver != 0)
             driverManager->registerDeviceDriver(deviceDriver);
         }
-
-        printf("PCI BUS ");
-        printfHexa(bus & 0xFF);
-
-        printf(", DEVICE ");
-        printfHexa(device & 0xFF);
-
-        printf(", FUNCTION ");
-        printfHexa(function & 0xFF);
-
-        printf("= VENDOR ");
-        printfHexa((getDevice.vendorID_ & 0xFF00) >> 8);
-        printfHexa(getDevice.vendorID_ & 0xFF);
-
-        printf(", DEVICE_ID ");
-        printfHexa((getDevice.deviceID_ & 0xFF00) >> 8);
-        printfHexa(getDevice.deviceID_ & 0xFF);
-
-        printf("\n");
       }
     }
   }
+
+  //printPCIDevices();
+
 }
 
 BaseAddressRegister
@@ -142,6 +161,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x1022: /// AMD
     switch (device.deviceID_) {
     case 0x2000: /// am79c973
+      log("AMD device detected", logLevel::DEBUG);
       break;
     }
 
@@ -153,6 +173,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x03: /// graphics
     switch (device.subclassID_) {
     case 0x00: /// VGA
+      log("VGA detected", logLevel::DEBUG);
       break;
     }
     break;
