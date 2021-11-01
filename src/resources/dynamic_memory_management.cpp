@@ -117,3 +117,37 @@ void MemoryManager::free(void *ptr_to_release) {
 } // namespace memory
 } // namespace resources
 } // namespace falconOS
+
+void *operator new(unsigned size_to_allocate) {
+  if (falconOS::resources::memory::MemoryManager::activeMemoryManager == 0) {
+    return 0;
+  }
+  return falconOS::resources::memory::MemoryManager::activeMemoryManager
+      ->malloc(size_to_allocate);
+}
+
+void *operator new[](unsigned size_to_allocate) {
+  if (falconOS::resources::memory::MemoryManager::activeMemoryManager == 0) {
+    return 0;
+  }
+  return falconOS::resources::memory::MemoryManager::activeMemoryManager
+      ->malloc(size_to_allocate);
+}
+
+void *operator new(unsigned size, void *ptr) { return ptr; }
+
+void *operator new[](unsigned size, void *ptr) { return ptr; }
+
+void operator delete(void *ptr_to_release) {
+  if (falconOS::resources::memory::MemoryManager::activeMemoryManager != 0) {
+    falconOS::resources::memory::MemoryManager::activeMemoryManager->free(
+        ptr_to_release);
+  }
+}
+
+void operator delete[](void *ptr_to_release) {
+  if (falconOS::resources::memory::MemoryManager::activeMemoryManager != 0) {
+    falconOS::resources::memory::MemoryManager::activeMemoryManager->free(
+        ptr_to_release);
+  }
+}

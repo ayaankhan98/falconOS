@@ -123,10 +123,12 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   GlobalDescriptorTable gdt;
 
   TaskManager taskManager;
+#ifdef MULTITASKING
   Task tA(&gdt, taskA);
   Task tB(&gdt, taskB);
   taskManager.registerTask(&tA);
   taskManager.registerTask(&tB);
+#endif
 
   InterruptManager interruptManager(0x20, &gdt, &taskManager);
 
@@ -140,7 +142,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa((heap >> 8) & 0xFF);
   printfHexa((heap)&0xFF);
 
-  void *allocated = memoryManager.malloc(2048);
+  void *allocated = new uint32_t[512];
   printf("\nallocated: 0x");
   printfHexa(((size_t)allocated >> 24) & 0xFF);
   printfHexa(((size_t)allocated >> 16) & 0xFF);
@@ -148,7 +150,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated) & 0xFF);
   printf("\n");
 
-  void *allocated2 = memoryManager.malloc(1024);
+  void *allocated2 = new uint32_t[256];
   printf("\nallocated: 0x");
   printfHexa(((size_t)allocated2 >> 24) & 0xFF);
   printfHexa(((size_t)allocated2 >> 16) & 0xFF);

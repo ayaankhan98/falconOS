@@ -35,3 +35,12 @@ public:
 } // namespace memory
 } // namespace resources
 } // namespace falconOS
+
+void *operator new(unsigned size_to_allocate);
+void *operator new[](unsigned size_to_allocate);
+
+void *operator new(unsigned size, void *ptr);
+void *operator new[](unsigned size, void *ptr);
+
+void operator delete(void *ptr_to_release);
+void operator delete[](void *ptr_to_release);
