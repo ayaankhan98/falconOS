@@ -67,6 +67,18 @@ void printfHexa(types::uint8_t hexaDigit_) {
   printf(foo_);
 }
 
+void log(/*int line_,*/ const char *function_, const char *file_,
+         const char *message_) {
+  printf("[");
+  // printf(to_string(line_));
+  printf(" ");
+  printf(function_);
+  printf(" ");
+  printf(file_);
+  printf(" ]: ");
+  log(message_);
+}
+
 void log(const char *message_, const logLevel level_) {
   switch (level_) {
   case logLevel::INFO:

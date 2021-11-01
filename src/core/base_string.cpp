@@ -1,43 +1,44 @@
 #include <core/base_string.h>
+#include <core/streamio.h>
 
 using namespace falconOS::core::types;
 
 namespace falconOS {
 namespace core {
-uint8_t len(char *str_) {
-  uint8_t length;
+int strlen(char *str_) {
+  int length;
   for (length = 0; str_[length] != '\0'; ++length)
     ;
-
   return length;
 }
 
-char *reverse(char *str_) {
-  uint8_t n = falconOS::core::len(str_);
-  char *temp;
-  for (uint8_t i = 0; i < n; ++i) {
-    temp[i] = str_[n - i - 1];
+char *strrev(char *str) {
+  int i, n, temp;
+  n = strlen(str);
+
+  for (i = 0; i < n / 2; i++) {
+    temp = str[i];
+    str[i] = str[n - i - 1];
+    str[n - i - 1] = temp;
   }
-  temp[n] = '\0';
-  str_ = temp;
-  return str_;
+  return str;
 }
 
-char *to_string(const uint8_t int_) {
-  uint8_t length;
-  uint8_t temp = int_;
+char *to_string(const int val) {
+  int length;
+  int temp = val;
   for (length = 0; temp != 0; temp /= 10, ++length)
     ;
 
   char *str_;
-  temp = int_;
+  temp = val;
 
   for (int i = 0; i < length; temp /= 10, ++i) {
     str_[i] = temp % 10 + '0';
   }
   str_[length] = '\0';
 
-  return falconOS::core::reverse(str_);
+  return strrev(str_);
 }
 } // namespace core
 } // namespace falconOS
