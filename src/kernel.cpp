@@ -118,8 +118,8 @@ void taskB() {
 
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
-  log("Booting Kernel", logLevel::INFO);
-  log("Initiating Hardware Stage 1", logLevel::INFO);
+  LOG("Booting Kernel");
+  LOG("Initiating Hardware Stage 1");
   GlobalDescriptorTable gdt;
 
   TaskManager taskManager;
@@ -171,9 +171,9 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   PeripheralComponentInterconnectController PCIController;
   PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
 
-  log("Initiating Hardware Stage 2", logLevel::INFO);
+  LOG("Initiating Hardware Stage 2");
   deviceDriverManager.activateAll();
-  log("Initiating Hardware Stage 3", logLevel::INFO);
+  LOG("Initiating Hardware Stage 3");
   interruptManager.activate();
   while (1)
     ;

@@ -51,7 +51,7 @@ bool PeripheralComponentInterconnectController::deviceHasFunctions(
 }
 
 void PeripheralComponentInterconnectController::printPCIDevices() {
-  
+
   for (uint16_t bus = 0; bus < 8; ++bus) {
     for (uint16_t device = 0; device < 32; ++device) {
       uint16_t numFunctions = deviceHasFunctions(bus, device) ? 8 : 1;
@@ -61,7 +61,7 @@ void PeripheralComponentInterconnectController::printPCIDevices() {
 
         if (getDevice.vendorID_ == 0x0000 || getDevice.vendorID_ == 0xFFFF)
           continue;
-  
+
         printf("PCI BUS ");
         printfHexa(bus & 0xFF);
 
@@ -113,8 +113,7 @@ void PeripheralComponentInterconnectController::selectDrivers(
     }
   }
 
-  //printPCIDevices();
-
+  // printPCIDevices();
 }
 
 BaseAddressRegister
@@ -161,7 +160,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x1022: /// AMD
     switch (device.deviceID_) {
     case 0x2000: /// am79c973
-      log("AMD device detected", logLevel::DEBUG);
+      LOG("AMD device detected");
       break;
     }
 
@@ -173,7 +172,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x03: /// graphics
     switch (device.subclassID_) {
     case 0x00: /// VGA
-      log("VGA detected", logLevel::DEBUG);
+      LOG("VGA detected");
       break;
     }
     break;
@@ -204,4 +203,3 @@ PeripheralComponentInterconnectController::getDeviceDescriptor(
 
   return result;
 }
-

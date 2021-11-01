@@ -1,10 +1,13 @@
 #pragma once
 
+#include <core/base_string.h>
 #include <core/types.h>
 
 namespace falconOS {
 namespace core {
 #define VIDEO_MEMORY_ADDRESS 0xB8000
+
+#define LOG(str) log(/* __LINE__, */ __FUNCTION__, __FILE__, str)
 
 enum screen { ROWS = 25, COLUMNS = 80 };
 
@@ -40,12 +43,8 @@ void printf(const char *str_, const color color_ = color::GRAY_ON_BLACK);
 
 void printfHexa(types::uint8_t hexaDigit_);
 
+void log(/*int line_, */ const char *function_, const char *file_,
+         const char *message_);
 void log(const char *message_, const logLevel level_ = logLevel::INFO);
-
-types::uint8_t len(char *str_);
-
-char *reverse(char *str_);
-
-char *to_string(const types::uint8_t int_);
 } // namespace core
 } // namespace falconOS
