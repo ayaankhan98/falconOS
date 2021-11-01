@@ -4,10 +4,10 @@
 
 namespace falconOS {
 namespace core {
-int len(char *str_);
+int strlen(char *str_);
 
-char *reverse(char *str_);
+char *strrev(char *str_);
 
-char *to_string(const int int_);
+char *to_string(const int val);
 } // namespace core
 } // namespace falconOS

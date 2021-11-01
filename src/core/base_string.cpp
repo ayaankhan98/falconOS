@@ -5,41 +5,40 @@ using namespace falconOS::core::types;
 
 namespace falconOS {
 namespace core {
-int len(char *str_) {
+int strlen(char *str_) {
   int length;
   for (length = 0; str_[length] != '\0'; ++length)
     ;
-
   return length;
 }
 
-char *reverse(char *str1) {
+char *strrev(char *str) {
   int i, n, temp;
-  n = len(str1);
+  n = strlen(str);
 
   for (i = 0; i < n / 2; i++) {
-    temp = str1[i];
-    str1[i] = str1[n - i - 1];
-    str1[n - i - 1] = temp;
+    temp = str[i];
+    str[i] = str[n - i - 1];
+    str[n - i - 1] = temp;
   }
-  return str1;
+  return str;
 }
 
-char *to_string(const int int_) {
+char *to_string(const int val) {
   int length;
-  int temp = int_;
+  int temp = val;
   for (length = 0; temp != 0; temp /= 10, ++length)
     ;
 
   char *str_;
-  temp = int_;
+  temp = val;
 
   for (int i = 0; i < length; temp /= 10, ++i) {
     str_[i] = temp % 10 + '0';
   }
   str_[length] = '\0';
 
-  return falconOS::core::reverse(str_);
+  return strrev(str_);
 }
 } // namespace core
 } // namespace falconOS
