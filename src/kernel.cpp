@@ -7,7 +7,6 @@
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
-#include <resources/multitasking.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -15,7 +14,7 @@ using namespace falconOS::hardware_interaction;
 using namespace falconOS::drivers;
 using namespace falconOS;
 using namespace falconOS::resources::memory;
-using namespace falconOS::resources::multitasking;
+using namespace falconOS::multitasking;
 
 typedef void (*constructor)();
 

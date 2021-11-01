@@ -1,7 +1,8 @@
 objects = bin/loader.o 								\
 	  bin/kernel.o 								\
 	  bin/gdt.o 								\
-		bin/resources/multitasking.o \
+		bin/multitasking/task.o \
+		bin/multitasking/task_manager.o \
 		bin/resources/dynamic_memory_management.o   \
 	  bin/drivers/drivers.o 						\
 	  bin/drivers/keyboard.o 						\
