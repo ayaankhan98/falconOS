@@ -1,12 +1,12 @@
-#include <hardware_interaction/interrupt.h>
-
 #include <core/streamio.h>
 #include <core/types.h>
+#include <hardware_interaction/interrupt.h>
+#include <multitasking/cpu_state.h>
 
 using namespace falconOS::hardware_interaction;
 using namespace falconOS::core::types;
 using namespace falconOS::core;
-using namespace falconOS::resources::multitasking;
+using namespace falconOS::multitasking;
 
 InterruptHandler::InterruptHandler(InterruptManager *interruptManager_,
                                    uint8_t interruptNumber_) {
