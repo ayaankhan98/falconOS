@@ -30,14 +30,30 @@ void printf(const char *str_, const color color_) {
       cursorX = 0;
     }
 
+    /// if cursor Y goes beyond the number of row, it means screen is
+    /// filled and we have to scroll the screen by one line
     if (cursorY >= screen::ROWS) {
-      for (cursorY = 0; cursorY <= screen::ROWS; cursorY++) {
-        for (cursorX = 0; cursorX <= screen::COLUMNS; cursorX++) {
-          videoMemory[screen::COLUMNS * cursorY + cursorX] =
-              (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0xFF00) | ' ';
-        }
+      for (int i = screen::COLUMNS; i < (screen::ROWS - 1) * screen::COLUMNS;
+           i++) {
+        videoMemory[i] = videoMemory[i + screen::COLUMNS];
       }
-      cursorX = 0, cursorY = 0;
+      for (i = (screen::ROWS - 1) * screen::COLUMNS; i < 25 * screen::COLUMNS;
+           i++) {
+        videoMemory[i] = ' ';
+      }
+      cursorY = (screen::ROWS - 1);
+
+      /** previous version: where we just clears the whole screen once it get
+       * filled
+       */
+      // for (cursorY = 0; cursorY <= screen::ROWS; cursorY++) {
+      //   for (cursorX = 0; cursorX <= screen::COLUMNS; cursorX++) {
+      //     videoMemory[screen::COLUMNS * cursorY + cursorX] =
+      //         (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0xFF00) | '
+      //         ';
+      //   }
+      // }
+      // cursorX = 0, cursorY = 0;
     }
   }
 }
