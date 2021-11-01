@@ -54,7 +54,7 @@ public:
 
   bool registerTask(Task *task);
   CPUState *roundRobbinScheduler(CPUState *cpuState);
-}; // namespace scheduler
+};
 } // namespace multitasking
 } // namespace resources
 } // namespace falconOS
