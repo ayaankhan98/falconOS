@@ -150,7 +150,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   deviceDriverManager.registerDeviceDriver(&mouse);
 
   PeripheralComponentInterconnectController PCIController;
-  PCIController.selectDrivers(&deviceDriverManager);
+  PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
 
   log("Initiating Hardware Stage 2", logLevel::INFO);
   deviceDriverManager.activateAll();

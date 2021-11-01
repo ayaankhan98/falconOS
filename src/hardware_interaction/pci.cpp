@@ -1,3 +1,4 @@
+
 #include <core/streamio.h>
 #include <hardware_interaction/pci.h>
 
@@ -49,9 +50,8 @@ bool PeripheralComponentInterconnectController::deviceHasFunctions(
   return read(busNumber, deviceNumber, 0, 0x0e) & (1 << 7);
 }
 
-void PeripheralComponentInterconnectController::selectDrivers(
-    DeviceDriverManager *driverManager) {
-
+void PeripheralComponentInterconnectController::printPCIDevices() {
+  
   for (uint16_t bus = 0; bus < 8; ++bus) {
     for (uint16_t device = 0; device < 32; ++device) {
       uint16_t numFunctions = deviceHasFunctions(bus, device) ? 8 : 1;
@@ -60,8 +60,8 @@ void PeripheralComponentInterconnectController::selectDrivers(
             getDeviceDescriptor(bus, device, function);
 
         if (getDevice.vendorID_ == 0x0000 || getDevice.vendorID_ == 0xFFFF)
-          break; /// no more devices after this condition
-
+          continue;
+  
         printf("PCI BUS ");
         printfHexa(bus & 0xFF);
 
@@ -83,6 +83,103 @@ void PeripheralComponentInterconnectController::selectDrivers(
       }
     }
   }
+}
+
+void PeripheralComponentInterconnectController::selectDrivers(
+    DeviceDriverManager *driverManager, InterruptManager *interruptManager) {
+
+  for (uint16_t bus = 0; bus < 8; ++bus) {
+    for (uint16_t device = 0; device < 32; ++device) {
+      uint16_t numFunctions = deviceHasFunctions(bus, device) ? 8 : 1;
+      for (uint16_t function = 0; function < 8; ++function) {
+        PeripheralComponentInterconnectDeviceDescriptor getDevice =
+            getDeviceDescriptor(bus, device, function);
+
+        if (getDevice.vendorID_ == 0x0000 || getDevice.vendorID_ == 0xFFFF)
+          continue;
+
+        for (uint16_t barNum = 0; barNum < 6; ++barNum) {
+          BaseAddressRegister bar =
+              getBaseAddressRegister(bus, device, function, barNum);
+          if (bar.address_ &&
+              (bar.type_ == baseAddressRegisterType::INPUTOUTPUT))
+            getDevice.portBase_ = (uint32_t)bar.address_;
+
+          DeviceDriver *deviceDriver = getDriver(getDevice, interruptManager);
+          if (deviceDriver != 0)
+            driverManager->registerDeviceDriver(deviceDriver);
+        }
+      }
+    }
+  }
+
+  //printPCIDevices();
+
+}
+
+BaseAddressRegister
+PeripheralComponentInterconnectController::getBaseAddressRegister(
+    uint16_t busNumber, uint16_t deviceNumber, uint16_t functionNumber,
+    uint16_t barNumber) {
+  BaseAddressRegister result;
+
+  uint32_t headerType =
+      read(busNumber, deviceNumber, functionNumber, 0x0E) & 0x7F;
+  uint16_t maxBAR = 6 - (4 * headerType);
+  if (barNumber >= maxBAR)
+    return result;
+
+  uint32_t barValue =
+      read(busNumber, deviceNumber, functionNumber, 0x10 + (4 * barNumber));
+  result.type_ = (barValue & 0x1) ? baseAddressRegisterType::INPUTOUTPUT
+                                  : baseAddressRegisterType::MEMORYMAPPING;
+  uint32_t temp;
+
+  if (result.type_ == MEMORYMAPPING) {
+
+    // switch((barValue >> 1) & 0x3) {
+    //   case 0: /// 32Bit memory Bar
+    //   case 1: /// 20Bit memory Bar
+    //   case 2: /// 64Bit memory Bar
+    // }
+
+    result.prefetchable_ = ((barValue >> 3) & 0x1 == 0x1);
+
+  } else {
+    result.address_ = (uint8_t *)(barValue & ~0x3);
+    result.prefetchable_ = false;
+  }
+
+  return result;
+}
+
+DeviceDriver *PeripheralComponentInterconnectController::getDriver(
+    PeripheralComponentInterconnectDeviceDescriptor device,
+    InterruptManager *interruptManager) {
+
+  switch (device.vendorID_) {
+  case 0x1022: /// AMD
+    switch (device.deviceID_) {
+    case 0x2000: /// am79c973
+      log("AMD device detected", logLevel::DEBUG);
+      break;
+    }
+
+  case 0x8086: /// Intel
+    break;
+  }
+
+  switch (device.classID_) {
+  case 0x03: /// graphics
+    switch (device.subclassID_) {
+    case 0x00: /// VGA
+      log("VGA detected", logLevel::DEBUG);
+      break;
+    }
+    break;
+  }
+
+  return 0;
 }
 
 PeripheralComponentInterconnectDeviceDescriptor
