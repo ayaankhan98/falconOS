@@ -6,6 +6,7 @@
 using namespace falconOS::hardware_interaction;
 using namespace falconOS::core::types;
 using namespace falconOS::core;
+using namespace falconOS::resources::multitasking;
 
 InterruptHandler::InterruptHandler(InterruptManager *interruptManager_,
                                    uint8_t interruptNumber_) {
@@ -44,11 +45,13 @@ void InterruptManager::setInterruptDescriptorTableEntry(
 }
 
 InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset,
-                                   falconOS::GlobalDescriptorTable *gdt_)
+                                   falconOS::GlobalDescriptorTable *gdt_,
+                                   TaskManager *taskManager)
     : programmableInterruptControllerMasterCommandPort(0x20),
       programmableInterruptControllerMasterDataPort(0x21),
       programmableInterruptControllerSlaveCommandPort(0xA0),
       programmableInterruptControllerSlaveDataPort(0xA1) {
+  this->taskManager_ = taskManager;
   this->hardwareInterruptOffset_ = hardwareInterruptOffset;
   uint32_t codeSegment = gdt_->CodeSegmentSelector();
 
@@ -211,6 +214,10 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t interruptNumber_,
   } else if (interruptNumber_ != hardwareInterruptOffset_) {
     printf("UNHANDLED INTERRUPT 0x");
     printfHexa(interruptNumber_);
+  }
+
+  if (interruptNumber_ == hardwareInterruptOffset_) {
+    esp_ = (uint32_t)taskManager_->roundRobbinScheduler((CPUState *)esp_);
   }
 
   // hardware interrupts must be acknowledged

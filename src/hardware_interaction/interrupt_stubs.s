@@ -15,6 +15,7 @@ _ZN8falconOS20hardware_interaction16InterruptManager19handleException\num\()Ev:
 .global _ZN8falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev
 _ZN8falconOS20hardware_interaction16InterruptManager26handleInterruptRequest\num\()Ev:
     movb $\num + IRQ_BASE, (interruptnumber)
+    pushl $0;
     jmp serve_interrupt
 .endm
 
@@ -58,33 +59,51 @@ handleInterruptRequest 0x0F
 handleInterruptRequest 0x31
 
 serve_interrupt:
+    # save registers
+    # pusha
+    # pushl %ds
+    # pushl %es
+    # pushl %fs
+    # pushl %gs
+    
+    pushl %ebp
+    pushl %edi
+    pushl %esi
 
-    # register sichern
-    pusha
-    pushl %ds
-    pushl %es
-    pushl %fs
-    pushl %gs
+    pushl %edx
+    pushl %ecx
+    pushl %ebx
+    pushl %eax
 
-    # ring 0 segment register laden
-    #cld
-    #mov $0x10, %eax
-    #mov %eax, %eds
-    #mov %eax, %ees
+    # load ring 0 segment register
+    # cld
+    # mov $0x10, %eax
+    # mov %eax, %eds
+    # mov %eax, %ees
 
-    # C++ Handler aufrufen
+    # call C++ Handler
     pushl %esp
     push (interruptnumber)
     call _ZN8falconOS20hardware_interaction16InterruptManager15handleInterruptEhj
-    add %esp, 6
-    mov %eax, %esp # den stack wechseln
+    # add %esp, 6
+    mov %eax, %esp # switch the stack
 
-    # register laden
-    pop %gs
-    pop %fs
-    pop %es
-    pop %ds
-    popa
+    # restore registers
+    popl %eax
+    popl %ebx
+    popl %ecx
+    popl %edx
+
+    popl %esi
+    popl %edi
+    popl %ebp
+    # pop %gs
+    # pop %fs
+    # pop %es
+    # pop %ds
+    # popa
+    
+    add $4, %esp
 
 .global _ZN8falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv
 _ZN8falconOS20hardware_interaction16InterruptManager15ignoreInterruptEv:

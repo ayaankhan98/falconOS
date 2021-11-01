@@ -7,6 +7,7 @@
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
+#include <resources/multitasking.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -14,6 +15,7 @@ using namespace falconOS::hardware_interaction;
 using namespace falconOS::drivers;
 using namespace falconOS;
 using namespace falconOS::resources::memory;
+using namespace falconOS::resources::multitasking;
 
 typedef void (*constructor)();
 
@@ -106,12 +108,28 @@ public:
   }
 };
 
+void taskA() {
+  while (true)
+    printf("A");
+}
+void taskB() {
+  while (true)
+    printf("B");
+}
+
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   log("Booting Kernel", logLevel::INFO);
   log("Initiating Hardware Stage 1", logLevel::INFO);
   GlobalDescriptorTable gdt;
-  InterruptManager interruptManager(0x20, &gdt);
+
+  TaskManager taskManager;
+  Task tA(&gdt, taskA);
+  Task tB(&gdt, taskB);
+  taskManager.registerTask(&tA);
+  taskManager.registerTask(&tB);
+
+  InterruptManager interruptManager(0x20, &gdt, &taskManager);
 
   uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
   size_t heap = 10 * 1024 * 1024;
@@ -159,4 +177,3 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   while (1)
     ;
 }
-

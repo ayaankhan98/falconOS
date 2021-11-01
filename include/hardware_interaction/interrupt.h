@@ -3,6 +3,7 @@
 #include <core/types.h>
 #include <gdt.h>
 #include <hardware_interaction/port.h>
+#include <resources/multitasking.h>
 
 namespace falconOS {
 namespace hardware_interaction {
@@ -27,6 +28,7 @@ class InterruptManager {
 protected:
   static InterruptManager *activeInterruptManager;
   InterruptHandler *handlers[256];
+  falconOS::resources::multitasking::TaskManager *taskManager_;
 
   /// an entry in Interrupt descriptor table is known as gate descriptor
   struct GateDescriptor {
@@ -108,7 +110,8 @@ protected:
 
 public:
   InterruptManager(falconOS::core::types::uint16_t hardwareInterruptOffset,
-                   GlobalDescriptorTable *gdt_);
+                   GlobalDescriptorTable *gdt_,
+                   falconOS::resources::multitasking::TaskManager *taskManager);
   ~InterruptManager();
   falconOS::core::types::uint16_t hardwareInterruptOffset();
   void activate();
