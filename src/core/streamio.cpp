@@ -18,10 +18,10 @@ void revInversion(int8_t pos_x, int8_t pos_y) {
 void reverseColors(int8_t pos_x, int8_t pos_y) {
   static uint16_t *videoMemory = (uint16_t *)VIDEO_MEMORY_ADDRESS;
   /// Background color is set to foreground, and vice versa
-  videoMemory[80 * pos_y + pos_x] =
-      ((videoMemory[80 * pos_y + pos_x] & 0xF000) >> 4) |
-      ((videoMemory[80 * pos_y + pos_x] & 0x0F00) << 4) |
-      (videoMemory[80 * pos_y + pos_x] & 0x00FF);
+  videoMemory[screen::COLUMNS * pos_y + pos_x] =
+      ((videoMemory[screen::COLUMNS * pos_y + pos_x] & 0xF000) >> 4) |
+      ((videoMemory[screen::COLUMNS * pos_y + pos_x] & 0x0F00) << 4) |
+      (videoMemory[screen::COLUMNS * pos_y + pos_x] & 0x00FF);
   revInversion(pos_x, pos_y);
 }
 
@@ -64,7 +64,7 @@ void printf(const char *str_, const color color_) {
           }
         }
       }
-      for (i = (screen::ROWS - 1) * screen::COLUMNS; i < 25 * screen::COLUMNS;
+      for (i = (screen::ROWS - 1) * screen::COLUMNS; i < screen::ROWS * screen::COLUMNS;
            i++) {
         videoMemory[i] = ' ';
       }
