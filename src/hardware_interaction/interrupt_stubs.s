@@ -58,6 +58,8 @@ handleInterruptRequest 0x0E
 handleInterruptRequest 0x0F
 handleInterruptRequest 0x31
 
+handleInterruptRequest 0x80
+
 serve_interrupt:
     # save registers
     # pusha
