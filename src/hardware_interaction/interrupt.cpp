@@ -156,6 +156,12 @@ InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset,
                                    &handleInterruptRequest0x0F, 0,
                                    IDT_INTERRUPT_GATE);
 
+  setInterruptDescriptorTableEntry(                          0x80, codeSegment,
+                                   &handleInterruptRequest0x80, 0,
+                                   IDT_INTERRUPT_GATE);
+
+ 
+
   programmableInterruptControllerMasterCommandPort.write(0x11);
   programmableInterruptControllerSlaveCommandPort.write(0x11);
 

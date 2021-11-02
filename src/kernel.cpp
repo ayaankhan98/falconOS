@@ -7,6 +7,7 @@
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
+#include <resources/system_calls.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -15,6 +16,9 @@ using namespace falconOS::drivers;
 using namespace falconOS;
 using namespace falconOS::resources::memory;
 using namespace falconOS::multitasking;
+using namespace falconOS::resources::syscalls;
+
+#define MULTITASKING
 
 typedef void (*constructor)();
 
@@ -107,6 +111,10 @@ public:
   }
 };
 
+void sysPrintf(char* str) {
+  asm ("int $0x80" : : "a" (4), "b" (*str));
+}
+
 void taskA() {
   while (true)
     printf("A");
@@ -131,6 +139,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 #endif
 
   InterruptManager interruptManager(0x20, &gdt, &taskManager);
+  SystemCallHandler systemCalls(&interruptManager, 0x80);
 
   uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
   size_t heap = 10 * 1024 * 1024;
