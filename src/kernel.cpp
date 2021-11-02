@@ -18,8 +18,6 @@ using namespace falconOS::resources::memory;
 using namespace falconOS::multitasking;
 using namespace falconOS::resources::syscalls;
 
-#define MULTITASKING
-
 typedef void (*constructor)();
 
 /// Pointer to the start of global objects
@@ -111,7 +109,7 @@ public:
   }
 };
 
-void sysPrintf(char *str) { asm("int $0x80" : : "a"(4), "b"(*str)); }
+void sysPrintf(char *str) { asm("int $0x80" : : "a"(4), "b"(str)); }
 
 void taskA() {
   while (true)
@@ -182,6 +180,8 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   deviceDriverManager.activateAll();
   LOG("Initiating Hardware Stage 3");
   interruptManager.activate();
+
+  sysPrintf("Checking System Calls");
   while (1)
     ;
 }

@@ -20,7 +20,7 @@ uint32_t SystemCallHandler::handleInterrupt(uint32_t esp) {
 
   switch (cpu->eax) {
   case 4:
-    printf((char *)cpu->ebx);
+    log((char *)cpu->ebx, logLevel::DEBUG);
     break;
 
   default:
