@@ -32,16 +32,9 @@ extern "C" void callConstructors() {
     (*i)();
 }
 
-uint8_t inversion[screen::COLUMNS][screen::ROWS];
-
 void updateMousePointer(int8_t pos_x, int8_t pos_y) {
-  static uint16_t *videoMemory = (uint16_t *)VIDEO_MEMORY_ADDRESS;
-  /// Background color is set to foreground, and vice versa
-  videoMemory[80 * pos_y + pos_x] =
-      ((videoMemory[80 * pos_y + pos_x] & 0xF000) >> 4) |
-      ((videoMemory[80 * pos_y + pos_x] & 0x0F00) << 4) |
-      (videoMemory[80 * pos_y + pos_x] & 0x00FF);
-  inversion[pos_x][pos_y] = !inversion[pos_x][pos_y];
+
+  reverseColors(pos_x, pos_y);
 }
 
 class PrintKeyBoardEventHandler : public KeyboardEventHandler {
@@ -67,7 +60,7 @@ public:
 
   void onMouseMove(int8_t offset_x, int8_t offset_y) override {
 
-    if (inversion[pos_x][pos_y])
+    if (getInversion(pos_x, pos_y))
       updateMousePointer(pos_x, pos_y);
 
     pos_x += offset_x;

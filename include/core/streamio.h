@@ -39,6 +39,12 @@ enum logLevel {
   TRACE = 5
 };
 
+bool getInversion(types::int8_t pos_x, types::int8_t pos_y);
+
+void revInversion(types::int8_t pos_x, types::int8_t pos_y);
+
+void reverseColors(types::int8_t pos_x, types::int8_t pos_y);
+
 void printf(const char *str_, const color color_ = color::GRAY_ON_BLACK);
 
 void printfHexa(types::uint8_t hexaDigit_);
