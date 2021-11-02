@@ -69,20 +69,19 @@ public:
   void selectDrivers(
       drivers::DeviceDriverManager *driverManager,
       falconOS::hardware_interaction::InterruptManager *interruptManager);
-  
+
   PeripheralComponentInterconnectDeviceDescriptor
   getDeviceDescriptor(falconOS::core::types::uint16_t busNumber,
                       falconOS::core::types::uint16_t deviceNumber,
                       falconOS::core::types::uint16_t functionNumber);
-  
+
   BaseAddressRegister
   getBaseAddressRegister(falconOS::core::types::uint16_t busNumber,
                          falconOS::core::types::uint16_t deviceNumber,
                          falconOS::core::types::uint16_t functionNumber,
                          falconOS::core::types::uint16_t barNumber);
-  
+
   void printPCIDevices();
 };
 } // namespace hardware_interaction
 } // namespace falconOS
-

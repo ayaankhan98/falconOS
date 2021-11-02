@@ -111,9 +111,7 @@ public:
   }
 };
 
-void sysPrintf(char* str) {
-  asm ("int $0x80" : : "a" (4), "b" (*str));
-}
+void sysPrintf(char *str) { asm("int $0x80" : : "a"(4), "b"(*str)); }
 
 void taskA() {
   while (true)
