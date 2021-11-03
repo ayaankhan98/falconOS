@@ -7,8 +7,8 @@
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
-#include <resources/system_calls.h>
 #include <resources/placement_memory_management.h>
+#include <resources/system_calls.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -166,7 +166,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printf("\n");
 
   size_t kheapStart = 20 * 1024 * 1024;
-  PlacementMemoryManager placementMemoryManager(kheapStart);  
+  PlacementMemoryManager placementMemoryManager(kheapStart);
 
   printf("kheap: 0x");
   printfHexa((kheapStart >> 24) & 0xFF);
