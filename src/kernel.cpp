@@ -8,6 +8,7 @@
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
 #include <resources/system_calls.h>
+#include <resources/placement_memory_management.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -17,6 +18,7 @@ using namespace falconOS;
 using namespace falconOS::resources::memory;
 using namespace falconOS::multitasking;
 using namespace falconOS::resources::syscalls;
+using namespace falconOS::resources::pmemory;
 
 typedef void (*constructor)();
 
@@ -163,6 +165,30 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
 
+  size_t kheapStart = 20 * 1024 * 1024;
+  PlacementMemoryManager placementMemoryManager(kheapStart);  
+
+  printf("kheap: 0x");
+  printfHexa((kheapStart >> 24) & 0xFF);
+  printfHexa((kheapStart >> 16) & 0xFF);
+  printfHexa((kheapStart >> 8) & 0xFF);
+  printfHexa((kheapStart)&0xFF);
+
+  void *allocated3 = placementMemoryManager.kMalloc(4096, false);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated3 >> 24) & 0xFF);
+  printfHexa(((size_t)allocated3 >> 16) & 0xFF);
+  printfHexa(((size_t)allocated3 >> 8) & 0xFF);
+  printfHexa(((size_t)allocated3) & 0xFF);
+  printf("\n");
+
+  void *allocated4 = placementMemoryManager.kMalloc(4096, false);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated4 >> 24) & 0xFF);
+  printfHexa(((size_t)allocated4 >> 16) & 0xFF);
+  printfHexa(((size_t)allocated4 >> 8) & 0xFF);
+  printfHexa(((size_t)allocated4) & 0xFF);
+  printf("\n");
   DeviceDriverManager deviceDriverManager;
 
   PrintKeyBoardEventHandler keyboardEventHandler;
