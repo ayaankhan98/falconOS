@@ -11,10 +11,12 @@ objects = bin/loader.o 								\
 	  bin/hardware_interaction/interrupt_stubs.o 				\
 	  bin/hardware_interaction/interrupt.o 					\
 	  bin/resources/system_calls.o 					\
+	  bin/libc/memset.o								\
 	  bin/resources/placement_memory_management.o	\
+	  bin/paging.o									\
 	  bin/hardware_interaction/pci.o 					\
 	  bin/core/streamio.o 							\
-	  bin/core/base_string.o
+	  bin/core/base_string.o						\
 
 bin/%.o: src/%.cpp
 	mkdir -p $(@D)

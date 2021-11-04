@@ -1,11 +1,13 @@
 #pragma once
 
 #include <core/types.h>
+#include <resources/placement_memory_management.h>
+#include <hardware_interaction/interrupt.h>
 
 namespace falconOS {
 class PageDescriptor {
 private:
-  uint32_t pageDescriptorWord_;
+  falconOS::core::types::uint32_t pageDescriptorWord_;
 
 public:
   PageDescriptor();
@@ -22,7 +24,6 @@ public:
 
 class Frames {
   public:
-    
     Frames();
     ~Frames();
 
@@ -40,7 +41,7 @@ class Frames {
     falconOS::core::types::uint32_t firstFreeFrame();
     void allocateFrame(PageDescriptor *pageDescriptor, bool userMode, bool writable);
     void freeFrame(PageDescriptor *pageDescriptor);   
-}
+};
 
 class PageTable {
 public:
@@ -62,7 +63,7 @@ class PagingManager {
   private:
     PageDirectory *currentDirectory;
     PageDirectory *kernelDirectory;
-    PlacementMemoryManager *placementMemoryManager;
+    falconOS::resources::pmemory::PlacementMemoryManager *placementMemoryManager;
 
   public:
     PagingManager(falconOS::core::types::uint32_t capacity, Frames *frames, falconOS::resources::pmemory::PlacementMemoryManager *placementMemoryManager);
@@ -70,7 +71,7 @@ class PagingManager {
     void switchPageDirectory(PageDirectory *newDirectory);
     PageDescriptor *getPage(falconOS::core::types::uint32_t address, bool make, PageDirectory *pageDirectory);
 
-}
+};
 
 class PageFaultHandler : public falconOS::hardware_interaction::InterruptHandler {
 public:

@@ -4,6 +4,7 @@
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 #include <gdt.h>
+#include <paging.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <resources/dynamic_memory_management.h>
@@ -167,8 +168,16 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
   size_t kheapStart = (*memupper) * 1024 - 10 * 1024;
       /* end */ /// set kheap after the reserved bytes for the heap
+  
   PlacementMemoryManager placementMemoryManager(kheapStart);
+  Frames frames;
+  uint32_t pagingCapacity = 0x1000000;
 
+  PagingManager pagingManager(&pagingCapacity, &frames, &placementMemoryManager);
+
+  uint32_t *ptr = (uint32_t*)0xA0000000;
+  uint32_t doPageFault = *ptr;
+  /*
   printf("kheap: 0x");
   printfHexa((kheapStart >> 24) & 0xFF);
   printfHexa((kheapStart >> 16) & 0xFF);
@@ -190,6 +199,10 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated4 >> 8) & 0xFF);
   printfHexa(((size_t)allocated4) & 0xFF);
   printf("\n");
+  */
+
+
+
   DeviceDriverManager deviceDriverManager;
 
   PrintKeyBoardEventHandler keyboardEventHandler;

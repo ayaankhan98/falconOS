@@ -1,6 +1,12 @@
 #include <paging.h>
+#include <core/streamio.h>
+#include <libc/memset.h>
 
 using namespace falconOS::core::types;
+using namespace falconOS::resources::pmemory;
+using namespace falconOS::core;
+using namespace falconOS;
+using namespace falconOS::libc;
 
 PageDescriptor::PageDescriptor() {
   setFrameAddress(0x0);
@@ -38,6 +44,9 @@ uint32_t PageDescriptor::getFrameAddress() {
 bool PageDescriptor::getFlagValue(uint16_t offset) {
   return (pageDescriptorWord_ & (1 << offset));
 }
+
+Frames::Frames() {}
+Frames::~Frames() {}
 
 uint32_t Frames::indexFromBit(uint32_t frameAddress) {
   return frameAddress/32;
@@ -85,7 +94,7 @@ void Frames::allocateFrame(PageDescriptor *pageDescriptor, bool userMode, bool w
   if(pageDescriptor->getFrameAddress()) return;
   else {
     uint32_t index = firstFreeFrame();
-    if(index == (0x1 << 32) - 1) {
+    if(index == (0x1 << 31) - 1) {
       log("No free frames\n", logLevel::ERROR);
       return;
     } 
@@ -99,7 +108,7 @@ void Frames::allocateFrame(PageDescriptor *pageDescriptor, bool userMode, bool w
 
 void Frames::freeFrame(PageDescriptor *pageDescriptor) {
   uint32_t frame;
-  if (!(frame = pageDescriptor->getFrameAddress)) {
+  if (!(frame = pageDescriptor->getFrameAddress())) {
     return;
   }
   clearFrame(frame);
@@ -112,7 +121,7 @@ PageTable::~PageTable() {}
 PageDirectory::PageDirectory() {}
 PageDirectory::~PageDirectory() {}
 
-PagingManager::PagingManager(falconOS::core::types::uint32_t capacity, Frames *frames, falconOS::resources::pmemory::PlacementMemoryManager *placementMemoryManager) {
+PagingManager::PagingManager(uint32_t capacity, Frames *frames, PlacementMemoryManager *placementMemoryManager) {
   currentDirectory = 0;
   kernelDirectory = 0;
   this->placementMemoryManager = placementMemoryManager;
@@ -122,17 +131,17 @@ PagingManager::PagingManager(falconOS::core::types::uint32_t capacity, Frames *f
   frames->frameTable_ = (uint32_t*)placementMemoryManager->kMalloc(frames->maxFrameTables_, 0);
 
   uint32_t sizeFrameTables = frames->indexFromBit(frames->maxFrameTables_);
-  for(;sizeFrameTables != 0; sizeFrameTables--) *(frames->frameTable_++) = 0; 
+  //memset((uint8_t *)frames->frameTable_, 0, sizeFrameTables);
   
   uint32_t sizePageDirectory = sizeof(PageDirectory);
   kernelDirectory = (PageDirectory*)placementMemoryManager->kMalloc(sizePageDirectory, 1);
-  for(;sizePageDirectory != 0; sizePageDirectory--) *kernelDirectory++ = 0;
+  //memset((uint8_t *)kernelDirectory, 0, sizePageDirectory);
 
   currentDirectory = kernelDirectory;
 
   uint32_t i;
   while(i < placementMemoryManager->placementAddress_) {
-    allocateFrame(getPage(i, 1, kernelDirectory), 1, 0);
+    frames->allocateFrame(getPage(i, 1, kernelDirectory), 1, 0);
     i += 0x1000;
   }  
 
@@ -140,7 +149,7 @@ PagingManager::PagingManager(falconOS::core::types::uint32_t capacity, Frames *f
 
 }
 
-PagingManager::~PagingManager();
+PagingManager::~PagingManager(){}
 
 void PagingManager::switchPageDirectory(PageDirectory *newDirectory) {
   currentDirectory = newDirectory;
@@ -161,8 +170,7 @@ PageDescriptor* PagingManager::getPage(falconOS::core::types::uint32_t address, 
   } else if(make) {
     pageDirectory->pageTablesVirtual_[tableIndex] = (PageTable *)placementMemoryManager->kMalloc(sizeof(PageTable), 1);
     uint32_t temp = 0x1000;
-
-    for(;temp != 0; temp--) *(pageDirectory->pageTablesVirtual_[tableIndex]++) = 0;
+    //memset((uint8_t *)pageDirectory->pageTablesVirtual_[tableIndex], 0, 0x1000);
     pageDirectory->pageTablesPhysical_[tableIndex] = ((uint32_t)pageDirectory->pageTablesVirtual_[tableIndex]) | 0x7;
     return &(pageDirectory->pageTablesVirtual_[tableIndex]->pages_[pageIndex]);
   } else {
@@ -179,4 +187,5 @@ PageFaultHandler::~PageFaultHandler();
 
 uint32_t PageFaultHandler::handleInterrupt(uint32_t esp) {
   log("Executed Page Fault Handler", logLevel::DEBUG);
+  return esp;
 }
