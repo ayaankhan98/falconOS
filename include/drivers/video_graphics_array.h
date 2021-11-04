@@ -1,9 +1,9 @@
 #pragma once
 
-#include <core/colors.h>
 #include <core/types.h>
 #include <drivers/drivers.h>
 #include <hardware_interaction/port.h>
+#include <libgui/colors.h>
 
 namespace falconOS {
 namespace drivers {
@@ -98,41 +98,27 @@ public:
                      falconOS::core::types::uint32_t colordepth);
   ~VideoGraphicsArray();
 
-  virtual bool supportsMode(falconOS::core::types::uint32_t width,
-                            falconOS::core::types::uint32_t height,
-                            falconOS::core::types::uint32_t colordepth);
+  bool supportsMode(falconOS::core::types::uint32_t width,
+                    falconOS::core::types::uint32_t height,
+                    falconOS::core::types::uint32_t colordepth);
 
-  virtual bool setMode(falconOS::core::types::uint32_t width,
-                       falconOS::core::types::uint32_t height,
-                       falconOS::core::types::uint32_t colordepth);
+  bool setMode(falconOS::core::types::uint32_t width,
+               falconOS::core::types::uint32_t height,
+               falconOS::core::types::uint32_t colordepth);
 
-  virtual void putPixel(falconOS::core::types::int32_t x,
-                        falconOS::core::types::int32_t y,
-                        falconOS::core::types::uint8_t r,
-                        falconOS::core::types::uint8_t g,
-                        falconOS::core::types::uint8_t b);
+  void putPixel(falconOS::core::types::int32_t x,
+                falconOS::core::types::int32_t y,
+                falconOS::core::types::uint8_t r,
+                falconOS::core::types::uint8_t g,
+                falconOS::core::types::uint8_t b);
 
-  virtual void putPixel(falconOS::core::types::int32_t x,
-                        falconOS::core::types::int32_t y,
-                        falconOS::core::types::uint8_t colorIndex);
+  void putPixel(falconOS::core::types::int32_t x,
+                falconOS::core::types::int32_t y,
+                falconOS::core::types::uint8_t colorIndex);
 
-  virtual void putPixel(falconOS::core::types::int32_t x,
-                        falconOS::core::types::int32_t y,
-                        falconOS::core::VGA_COLOR pixelColor);
-
-  virtual void fillRectangle(falconOS::core::types::uint32_t x,
-                             falconOS::core::types::uint32_t y,
-                             falconOS::core::types::uint32_t w,
-                             falconOS::core::types::uint32_t h,
-                             falconOS::core::types::uint8_t r,
-                             falconOS::core::types::uint8_t g,
-                             falconOS::core::types::uint8_t b);
-
-  virtual void fillRectangle(falconOS::core::types::uint32_t x,
-                             falconOS::core::types::uint32_t y,
-                             falconOS::core::types::uint32_t w,
-                             falconOS::core::types::uint32_t h,
-                             falconOS::core::VGA_COLOR pixelColor);
+  void putPixel(falconOS::core::types::int32_t x,
+                falconOS::core::types::int32_t y,
+                falconOS::libgui::VGA_COLOR pixelColor);
 };
 
 } // namespace drivers

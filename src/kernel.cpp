@@ -3,12 +3,14 @@
 #include <drivers/drivers.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
-#include <drivers/video_graphics_array.h>
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <libgui/graphics_context.h>
 #include <resources/dynamic_memory_management.h>
 #include <resources/system_calls.h>
+
+#define GRAPHICS_MODE
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -18,6 +20,7 @@ using namespace falconOS;
 using namespace falconOS::resources::memory;
 using namespace falconOS::multitasking;
 using namespace falconOS::resources::syscalls;
+using namespace falconOS::libgui;
 
 typedef void (*constructor)();
 
@@ -178,7 +181,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
 
 #ifdef GRAPHICS_MODE
-  VideoGraphicsArray vga;
+  GraphicsContext gc;
 #endif
 
   LOG("Initiating Hardware Stage 2");
@@ -187,10 +190,10 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   interruptManager.activate();
 
 #ifdef GRAPHICS_MODE
-  vga.setMode(320, 200, 8);
+  gc.setMode(320, 200, 8);
   for (int32_t y = 0; y < 200; y++) {
     for (int32_t x = 0; x < 320; x++) {
-      vga.putPixel(x, y, VGA_COLOR::GREEN);
+      gc.putPixel(x, y, Color(VGA_COLOR::GREEN));
     }
   }
 #endif
