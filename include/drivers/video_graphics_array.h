@@ -106,19 +106,19 @@ public:
                falconOS::core::types::uint32_t height,
                falconOS::core::types::uint32_t colordepth);
 
-  void putPixel(falconOS::core::types::int32_t x,
-                falconOS::core::types::int32_t y,
-                falconOS::core::types::uint8_t r,
-                falconOS::core::types::uint8_t g,
-                falconOS::core::types::uint8_t b);
+  void plotPixel(falconOS::core::types::int32_t x,
+                 falconOS::core::types::int32_t y,
+                 falconOS::core::types::uint8_t r,
+                 falconOS::core::types::uint8_t g,
+                 falconOS::core::types::uint8_t b);
 
-  void putPixel(falconOS::core::types::int32_t x,
-                falconOS::core::types::int32_t y,
-                falconOS::core::types::uint8_t colorIndex);
+  void plotPixel(falconOS::core::types::int32_t x,
+                 falconOS::core::types::int32_t y,
+                 falconOS::core::types::uint8_t colorIndex);
 
-  void putPixel(falconOS::core::types::int32_t x,
-                falconOS::core::types::int32_t y,
-                falconOS::libgui::VGA_COLOR pixelColor);
+  void plotPixel(falconOS::core::types::int32_t x,
+                 falconOS::core::types::int32_t y,
+                 falconOS::libgui::VGA_COLOR pixelColor);
 };
 
 } // namespace drivers

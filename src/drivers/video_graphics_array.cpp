@@ -139,7 +139,7 @@ uint8_t *VideoGraphicsArray::getFrameBufferSegment() {
   }
 }
 
-void VideoGraphicsArray::putPixel(int32_t x, int32_t y, uint8_t colorIndex) {
+void VideoGraphicsArray::plotPixel(int32_t x, int32_t y, uint8_t colorIndex) {
   if (x < 0 || 320 <= x || y < 0 || 200 <= y)
     return;
 
@@ -160,14 +160,15 @@ uint8_t VideoGraphicsArray::getColorIndex(uint8_t r, uint8_t g, uint8_t b) {
     return 0x3F; // white
 }
 
-// void VideoGraphicsArray::putPixel(int32_t x, int32_t y, uint8_t r, uint8_t g,
+// void VideoGraphicsArray::plotPixel(int32_t x, int32_t y, uint8_t r, uint8_t
+// g,
 //                                   uint8_t b) {
-//   putPixel(x, y, getColorIndex(r, g, b));
+//   plotPixel(x, y, getColorIndex(r, g, b));
 // }
 
-void VideoGraphicsArray::putPixel(int32_t x, int32_t y,
-                                  falconOS::libgui::VGA_COLOR pixelColor) {
-  putPixel(x, y, (uint8_t)pixelColor);
+void VideoGraphicsArray::plotPixel(int32_t x, int32_t y,
+                                   falconOS::libgui::VGA_COLOR pixelColor) {
+  plotPixel(x, y, (uint8_t)pixelColor);
 }
 } // namespace drivers
 } // namespace falconOS

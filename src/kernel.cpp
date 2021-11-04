@@ -193,9 +193,18 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   gc.setMode(320, 200, 8);
   for (int32_t y = 0; y < 200; y++) {
     for (int32_t x = 0; x < 320; x++) {
-      gc.putPixel(x, y, Color(VGA_COLOR::GREEN));
+      gc.plotPixel(x, y, Color(VGA_COLOR::BLACK));
     }
   }
+
+  gc.drawLine(2, 3, 50, 50, Color(VGA_COLOR::GREEN));
+  gc.drawLine(22, 10, 50, 50, Color(VGA_COLOR::BLUE));
+  gc.drawLine(40, 2, 50, 50, Color(VGA_COLOR::RED));
+  gc.drawLine(55, 20, 60, 120, Color(VGA_COLOR::CYAN));
+
+  gc.drawRectangle(110, 90, 80, 80, Color(VGA_COLOR::RED));
+  gc.drawRectangle(120, 100, 70, 70, Color(VGA_COLOR::WHITE));
+
 #endif
 
   sysPrintf("Checking System Calls");
