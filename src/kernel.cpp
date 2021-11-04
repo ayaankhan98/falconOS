@@ -165,7 +165,8 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
 
-  size_t kheapStart = 20 * 1024 * 1024;
+  size_t kheapStart = (*memupper) * 1024 - 10 * 1024;
+      /* end */ /// set kheap after the reserved bytes for the heap
   PlacementMemoryManager placementMemoryManager(kheapStart);
 
   printf("kheap: 0x");
