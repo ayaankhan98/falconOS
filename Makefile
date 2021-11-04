@@ -7,6 +7,10 @@ objects = bin/loader.o 								\
 	  bin/drivers/drivers.o 						\
 		bin/drivers/video_graphics_array.o \
 		bin/libgui/colors.o \
+		bin/libgui/widget.o \
+		bin/libgui/composite_widget.o \
+		bin/libgui/desktop.o \
+		bin/libgui/window.o \
 		bin/libgui/graphics_context.o \
 	  bin/drivers/keyboard.o 						\
 	  bin/drivers/mouse.o 							\

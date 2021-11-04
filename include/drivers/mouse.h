@@ -13,10 +13,22 @@ public:
   ~MouseEventHandler();
 
   virtual void onActivate();
-  virtual void onMouseButtonPressed(falconOS::core::types::uint8_t button);
-  virtual void onMouseButtonReleased(falconOS::core::types::uint8_t button);
-  virtual void onMouseMove(falconOS::core::types::int8_t x,
-                           falconOS::core::types::int8_t y);
+  virtual void onMouseKeyPressed(falconOS::core::types::int32_t x,
+                                 falconOS::core::types::int32_t y,
+                                 falconOS::core::types::uint8_t button);
+  virtual void onMouseKeyPressed(falconOS::core::types::uint8_t button);
+
+  virtual void onMouseKeyReleased(falconOS::core::types::int32_t x,
+                                  falconOS::core::types::int32_t y,
+                                  falconOS::core::types::uint8_t button);
+  virtual void onMouseKeyReleased(falconOS::core::types::uint8_t button);
+
+  virtual void onMouseMove(falconOS::core::types::int32_t x,
+                           falconOS::core::types::int32_t y);
+  virtual void onMouseMove(falconOS::core::types::int32_t oldX,
+                           falconOS::core::types::int32_t oldY,
+                           falconOS::core::types::int32_t newX,
+                           falconOS::core::types::int32_t newY);
 };
 
 class MouseDriver : public falconOS::hardware_interaction::InterruptHandler,

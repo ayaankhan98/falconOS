@@ -27,9 +27,9 @@ bool GraphicsContext::setMode(falconOS::core::types::uint32_t width,
 
 void GraphicsContext::plotPixel(falconOS::core::types::int32_t x,
                                 falconOS::core::types::int32_t y,
-                                falconOS::libgui::Color color) {
+                                falconOS::libgui::Color *color) {
   falconOS::drivers::VideoGraphicsArray::plotPixel(x, y,
-                                                   color.get8BitColorValue());
+                                                   color->get8BitColorValue());
 }
 
 /**
@@ -45,7 +45,7 @@ void GraphicsContext::drawLine(falconOS::core::types::int32_t x1,
                                falconOS::core::types::int32_t y1,
                                falconOS::core::types::int32_t x2,
                                falconOS::core::types::int32_t y2,
-                               falconOS::libgui::Color color) {
+                               falconOS::libgui::Color *color) {
 
   int i, dx, dy, signdx, signdy, dxabs, dyabs, x, y, pixelX, pixelY;
   /// horizontal distance of line
@@ -75,7 +75,7 @@ void GraphicsContext::drawLine(falconOS::core::types::int32_t x1,
         pixelY += signdy;
       }
       pixelX += signdx;
-      plotPixel(pixelX, pixelY, color.get8BitColorValue());
+      plotPixel(pixelX, pixelY, color);
     }
   }
   /// line is more vertical than horizontal
@@ -87,7 +87,7 @@ void GraphicsContext::drawLine(falconOS::core::types::int32_t x1,
         pixelX += signdx;
       }
       pixelY += signdy;
-      plotPixel(pixelX, pixelY, color.get8BitColorValue());
+      plotPixel(pixelX, pixelY, color);
     }
   }
 }
@@ -96,44 +96,43 @@ void GraphicsContext::drawRectangle(falconOS::core::types::uint32_t x,
                                     falconOS::core::types::uint32_t y,
                                     falconOS::core::types::uint32_t width,
                                     falconOS::core::types::uint32_t height,
-                                    falconOS::libgui::Color color) {
-  plotPixel(x, y, color.get8BitColorValue());
-  drawLine(x, y, x + width, y, color.get8BitColorValue());
-  drawLine(x, y, x, y + height, color.get8BitColorValue());
-  drawLine(x + width, y, x + width, y + height, color.get8BitColorValue());
-  drawLine(x, y + height, x + width, y + height, color.get8BitColorValue());
+                                    falconOS::libgui::Color *color) {
+  plotPixel(x, y, color);
+  drawLine(x, y, x + width, y, color);
+  drawLine(x, y, x, y + height, color);
+  drawLine(x + width, y, x + width, y + height, color);
+  drawLine(x, y + height, x + width, y + height, color);
 }
 
 void GraphicsContext::fillRectangle(falconOS::core::types::uint32_t x,
                                     falconOS::core::types::uint32_t y,
                                     falconOS::core::types::uint32_t width,
                                     falconOS::core::types::uint32_t height,
-                                    falconOS::libgui::Color color) {
+                                    falconOS::libgui::Color *color) {
   for (falconOS::core::types::int32_t Y = y; Y < y + height; Y++)
     for (falconOS::core::types::int32_t X = x; X < x + width; X++)
-      falconOS::drivers::VideoGraphicsArray::plotPixel(
-          X, Y, color.get8BitColorValue());
+      plotPixel(X, Y, color);
 }
 
 /// TODO
 void GraphicsContext::drawCircle(falconOS::core::types::int32_t xCenter,
                                  falconOS::core::types::int32_t yCenter,
                                  falconOS::core::types::int32_t radius,
-                                 falconOS::libgui::Color color) {}
+                                 falconOS::libgui::Color *color) {}
 
 /// TODO
 void GraphicsContext::fillCircle(falconOS::core::types::int32_t xCenter,
                                  falconOS::core::types::int32_t yCenter,
                                  falconOS::core::types::int32_t radius,
-                                 falconOS::libgui::Color color) {}
+                                 falconOS::libgui::Color *color) {}
 /// TODO
 void GraphicsContext::drawPloygon(falconOS::core::types::int32_t verticesCount,
                                   falconOS::core::types::int32_t *vertices,
-                                  falconOS::libgui::Color color) {}
+                                  falconOS::libgui::Color *color) {}
 
 /// TODO
 void GraphicsContext::fillPolygon(falconOS::core::types::int32_t verticesCount,
                                   falconOS::core::types::int32_t *vertices,
-                                  falconOS::libgui::Color color) {}
+                                  falconOS::libgui::Color *color) {}
 } // namespace libgui
 } // namespace falconOS

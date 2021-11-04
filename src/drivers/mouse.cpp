@@ -11,11 +11,21 @@ MouseEventHandler::~MouseEventHandler() {}
 
 void MouseEventHandler::onActivate() {}
 
-void MouseEventHandler::onMouseButtonPressed(uint8_t) {}
+void MouseEventHandler::onMouseKeyPressed(
+    falconOS::core::types::int32_t x, falconOS::core::types::int32_t y,
+    falconOS::core::types::uint8_t button) {}
+void MouseEventHandler::onMouseKeyPressed(uint8_t) {}
 
-void MouseEventHandler::onMouseButtonReleased(uint8_t) {}
+void MouseEventHandler::onMouseKeyReleased(
+    falconOS::core::types::int32_t x, falconOS::core::types::int32_t y,
+    falconOS::core::types::uint8_t button) {}
+void MouseEventHandler::onMouseKeyReleased(uint8_t) {}
 
-void MouseEventHandler::onMouseMove(int8_t x, int8_t y) {}
+void MouseEventHandler::onMouseMove(int32_t x, int32_t y) {}
+void MouseEventHandler::onMouseMove(falconOS::core::types::int32_t oldX,
+                                    falconOS::core::types::int32_t oldY,
+                                    falconOS::core::types::int32_t newX,
+                                    falconOS::core::types::int32_t newY) {}
 
 MouseDriver::MouseDriver(
     falconOS::hardware_interaction::InterruptManager *manager,
@@ -63,9 +73,9 @@ uint32_t MouseDriver::handleInterrupt(uint32_t esp) {
     for (uint8_t i = 0; i < 3; ++i) {
       if ((buffer[0] & (0x01 << i)) != (buttons & (0x01 << i))) {
         if (buttons & (0x01 << i)) {
-          mouseEventHandler->onMouseButtonReleased(i + 1);
+          mouseEventHandler->onMouseKeyReleased(i + 1);
         } else {
-          mouseEventHandler->onMouseButtonPressed(i + 1);
+          mouseEventHandler->onMouseKeyPressed(i + 1);
         }
       }
     }

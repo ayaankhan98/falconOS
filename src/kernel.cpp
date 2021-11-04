@@ -6,7 +6,10 @@
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <libgui/desktop.hpp>
 #include <libgui/graphics_context.h>
+#include <libgui/widget.hpp>
+#include <libgui/window.hpp>
 #include <resources/dynamic_memory_management.h>
 #include <resources/system_calls.h>
 
@@ -69,11 +72,10 @@ public:
     updateMousePointer(pos_x, pos_y);
   }
 
-  void onMouseMove(int8_t offset_x, int8_t offset_y) override {
+  void onMouseMove(int32_t offset_x, int32_t offset_y) override {
 
     if (inversion[pos_x][pos_y])
       updateMousePointer(pos_x, pos_y);
-
     pos_x += offset_x;
     if (pos_x < 0)
       pos_x = 0;
@@ -89,10 +91,9 @@ public:
     updateMousePointer(pos_x, pos_y);
   }
 
-  void onMouseButtonPressed(uint8_t button) override {
+  void onMouseKeyPressed(uint8_t button) override {
 
     updateMousePointer(pos_x, pos_y);
-
     switch (button) {
     case 1:
       log("Left Click Pressed", logLevel::DEBUG);
@@ -108,7 +109,7 @@ public:
       break;
     }
   }
-  void onMouseButtonReleased(uint8_t button) override {
+  void onMouseKeyReleased(uint8_t button) override {
     updateMousePointer(pos_x, pos_y);
   }
 };
@@ -167,14 +168,26 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
 
+#ifdef GRAPHICS_MODE
+  Desktop desktop(320, 200, &Color(VGA_COLOR::GREEN));
+#endif
+
   DeviceDriverManager deviceDriverManager;
 
+#ifdef GRAPHICS_MODE
+  KeyboardDriver keyboard(&interruptManager, &desktop);
+#else
   PrintKeyBoardEventHandler keyboardEventHandler;
   KeyboardDriver keyboard(&interruptManager, &keyboardEventHandler);
+#endif
   deviceDriverManager.registerDeviceDriver(&keyboard);
 
+#ifdef GRAPHICS_MODE
+  MouseDriver mouse(&interruptManager, &desktop);
+#else
   MouseToConsole mouseEventHandler;
   MouseDriver mouse(&interruptManager, &mouseEventHandler);
+#endif
   deviceDriverManager.registerDeviceDriver(&mouse);
 
   PeripheralComponentInterconnectController PCIController;
@@ -191,23 +204,16 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
 #ifdef GRAPHICS_MODE
   gc.setMode(320, 200, 8);
-  for (int32_t y = 0; y < 200; y++) {
-    for (int32_t x = 0; x < 320; x++) {
-      gc.plotPixel(x, y, Color(VGA_COLOR::BLACK));
-    }
-  }
-
-  gc.drawLine(2, 3, 50, 50, Color(VGA_COLOR::GREEN));
-  gc.drawLine(22, 10, 50, 50, Color(VGA_COLOR::BLUE));
-  gc.drawLine(40, 2, 50, 50, Color(VGA_COLOR::RED));
-  gc.drawLine(55, 20, 60, 120, Color(VGA_COLOR::CYAN));
-
-  gc.drawRectangle(110, 90, 80, 80, Color(VGA_COLOR::RED));
-  gc.drawRectangle(120, 100, 70, 70, Color(VGA_COLOR::WHITE));
-
+  Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
+  desktop.add(&win1);
+  Window win2(&desktop, 40, 15, 30, 30, &Color(VGA_COLOR::RED));
+  desktop.add(&win2);
 #endif
 
   sysPrintf("Checking System Calls");
-  while (1)
-    ;
+  while (1) {
+#ifdef GRAPHICS_MODE
+    desktop.draw(&gc);
+#endif
+  }
 }
