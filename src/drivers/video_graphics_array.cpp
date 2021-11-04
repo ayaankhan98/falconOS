@@ -160,27 +160,14 @@ uint8_t VideoGraphicsArray::getColorIndex(uint8_t r, uint8_t g, uint8_t b) {
     return 0x3F; // white
 }
 
-void VideoGraphicsArray::putPixel(int32_t x, int32_t y, uint8_t r, uint8_t g,
-                                  uint8_t b) {
-  putPixel(x, y, getColorIndex(r, g, b));
-}
+// void VideoGraphicsArray::putPixel(int32_t x, int32_t y, uint8_t r, uint8_t g,
+//                                   uint8_t b) {
+//   putPixel(x, y, getColorIndex(r, g, b));
+// }
 
-void VideoGraphicsArray::putPixel(int32_t x, int32_t y, VGA_COLOR pixelColor) {
+void VideoGraphicsArray::putPixel(int32_t x, int32_t y,
+                                  falconOS::libgui::VGA_COLOR pixelColor) {
   putPixel(x, y, (uint8_t)pixelColor);
-}
-
-void VideoGraphicsArray::fillRectangle(uint32_t x, uint32_t y, uint32_t w,
-                                       uint32_t h, VGA_COLOR pixelColor) {
-  for (int32_t Y = y; Y < y + h; Y++)
-    for (int32_t X = x; X < x + w; X++)
-      putPixel(X, Y, (uint8_t)pixelColor);
-}
-void VideoGraphicsArray::fillRectangle(uint32_t x, uint32_t y, uint32_t w,
-                                       uint32_t h, uint8_t r, uint8_t g,
-                                       uint8_t b) {
-  for (int32_t Y = y; Y < y + h; Y++)
-    for (int32_t X = x; X < x + w; X++)
-      putPixel(X, Y, r, g, b);
 }
 } // namespace drivers
 } // namespace falconOS
