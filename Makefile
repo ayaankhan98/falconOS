@@ -5,6 +5,7 @@ objects = bin/loader.o 								\
 		bin/multitasking/task_manager.o \
 		bin/resources/dynamic_memory_management.o   \
 	  bin/drivers/drivers.o 						\
+		bin/drivers/video_graphics_array.o \
 	  bin/drivers/keyboard.o 						\
 	  bin/drivers/mouse.o 							\
 	  bin/hardware_interaction/port.o 					\

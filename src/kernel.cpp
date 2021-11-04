@@ -3,6 +3,7 @@
 #include <drivers/drivers.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
+#include <drivers/video_graphics_array.h>
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
@@ -176,10 +177,23 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   PeripheralComponentInterconnectController PCIController;
   PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
 
+#ifdef GRAPHICS_MODE
+  VideoGraphicsArray vga;
+#endif
+
   LOG("Initiating Hardware Stage 2");
   deviceDriverManager.activateAll();
   LOG("Initiating Hardware Stage 3");
   interruptManager.activate();
+
+#ifdef GRAPHICS_MODE
+  vga.setMode(320, 200, 8);
+  for (int32_t y = 0; y < 200; y++) {
+    for (int32_t x = 0; x < 320; x++) {
+      vga.putPixel(x, y, VGA_COLOR::GREEN);
+    }
+  }
+#endif
 
   sysPrintf("Checking System Calls");
   while (1)
