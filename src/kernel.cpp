@@ -35,6 +35,7 @@ extern "C" void callConstructors() {
     (*i)();
 }
 
+extern uint32_t end;
 uint8_t inversion[screen::COLUMNS][screen::ROWS];
 
 void updateMousePointer(int8_t pos_x, int8_t pos_y) {
@@ -129,6 +130,16 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   LOG("Initiating Hardware Stage 1");
   GlobalDescriptorTable gdt;
 
+ 
+  size_t kheapStart = 0x10;
+  PlacementMemoryManager placementMemoryManager(&kheapStart);
+  Frames frames;
+  uint32_t pagingCapacity = 0x1000000;
+
+  PagingManager pagingManager(pagingCapacity, &frames, &placementMemoryManager);
+
+  // uint32_t *ptr = (uint32_t*)0xA0000000;
+  // uint32_t doPageFault = *ptr;
   TaskManager taskManager;
 #ifdef MULTITASKING
   Task tA(&gdt, taskA);
@@ -142,6 +153,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
   uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
   size_t heap = 10 * 1024 * 1024;
+  #ifdef MEMORY
   MemoryManager memoryManager(heap, (*memupper) * 1024 - heap - 10 * 1024);
 
   printf("heap: 0x");
@@ -165,18 +177,15 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2 >> 8) & 0xFF);
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
+  #endif
 
-  size_t kheapStart = (*memupper) * 1024 - 10 * 1024;
       /* end */ /// set kheap after the reserved bytes for the heap
-  
-  PlacementMemoryManager placementMemoryManager(kheapStart);
-  Frames frames;
-  uint32_t pagingCapacity = 0x1000000;
+  printf("kheap: 0x");
+  printfHexa((kheapStart >> 24) & 0xFF);
+  printfHexa((kheapStart >> 16) & 0xFF);
+  printfHexa((kheapStart >> 8) & 0xFF);
+  printfHexa((kheapStart)&0xFF);
 
-  PagingManager pagingManager(&pagingCapacity, &frames, &placementMemoryManager);
-
-  uint32_t *ptr = (uint32_t*)0xA0000000;
-  uint32_t doPageFault = *ptr;
   /*
   printf("kheap: 0x");
   printfHexa((kheapStart >> 24) & 0xFF);
@@ -222,6 +231,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   interruptManager.activate();
 
   sysPrintf("Checking System Calls");
+
   while (1)
     ;
 }

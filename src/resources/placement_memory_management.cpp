@@ -1,11 +1,14 @@
 #include <resources/placement_memory_management.h>
+#include <core/streamio.h>
 
 using namespace falconOS;
+using namespace falconOS::core;
 using namespace falconOS::core::types;
 using namespace falconOS::resources::pmemory;
 
 PlacementMemoryManager::PlacementMemoryManager(uint32_t *kheapStart)
-    : placementAddress_(kheapStart) {}
+    : placementAddress_(*kheapStart) {
+    }
 
 PlacementMemoryManager::~PlacementMemoryManager() {}
 

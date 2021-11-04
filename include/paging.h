@@ -20,10 +20,13 @@ public:
 
   falconOS::core::types::uint32_t getFrameAddress();
   bool getFlagValue(falconOS::core::types::uint16_t offset);
+
+  void initPageDescriptor();
 };
 
 class Frames {
   public:
+    Frames(falconOS::core::types::uint32_t maxFrameTables);
     Frames();
     ~Frames();
 
@@ -41,13 +44,18 @@ class Frames {
     falconOS::core::types::uint32_t firstFreeFrame();
     void allocateFrame(PageDescriptor *pageDescriptor, bool userMode, bool writable);
     void freeFrame(PageDescriptor *pageDescriptor);   
+
+    void initFrames(falconOS::core::types::uint32_t maxFrameTables);
 };
 
 class PageTable {
 public:
   PageTable();
   ~PageTable();
-  PageDescriptor pages_[1024];
+  PageDescriptor *pages_[1024];
+
+  void allocPageTable(falconOS::resources::pmemory::PlacementMemoryManager *placementMemoryManager);
+  void initPageTable();  
 };
 
 class PageDirectory {
@@ -57,6 +65,8 @@ public:
   PageTable *pageTablesVirtual_[1024];
   falconOS::core::types::uint32_t pageTablesPhysical_[1024];
   falconOS::core::types::uint32_t physicalAddress_;
+
+  void initPageDirectory(falconOS::resources::pmemory::PlacementMemoryManager *placementMemoryManager);  
 };
 
 class PagingManager {
