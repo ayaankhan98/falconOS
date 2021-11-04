@@ -18,9 +18,9 @@ public:
                        falconOS::core::types::uint32_t height,
                        falconOS::core::types::uint32_t colordepth);
 
-  virtual void putPixel(falconOS::core::types::int32_t x,
-                        falconOS::core::types::int32_t y,
-                        falconOS::libgui::Color color);
+  virtual void plotPixel(falconOS::core::types::int32_t x,
+                         falconOS::core::types::int32_t y,
+                         falconOS::libgui::Color color);
 
   virtual void drawRectangle(falconOS::core::types::uint32_t x,
                              falconOS::core::types::uint32_t y,
@@ -49,6 +49,13 @@ public:
                           falconOS::core::types::int32_t yCenter,
                           falconOS::core::types::int32_t radius,
                           falconOS::libgui::Color color);
+
+  virtual void drawPloygon(falconOS::core::types::int32_t verticesCount,
+                           falconOS::core::types::int32_t *vertices,
+                           falconOS::libgui::Color color);
+  virtual void fillPolygon(falconOS::core::types::int32_t verticesCount,
+                           falconOS::core::types::int32_t *vertices,
+                           falconOS::libgui::Color color);
 };
 } // namespace libgui
 } // namespace falconOS
