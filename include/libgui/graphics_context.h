@@ -1,6 +1,7 @@
 #pragma once
 
 #include <drivers/video_graphics_array.h>
+#include <libc/cmath.hpp>
 #include <libgui/colors.h>
 
 namespace falconOS {

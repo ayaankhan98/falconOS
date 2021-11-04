@@ -49,47 +49,64 @@ void GraphicsContext::fillRectangle(falconOS::core::types::uint32_t x,
           X, Y, color.get8BitColorValue());
 }
 
-/// TODO
+/**
+ * @brief using Bresenham's line algorithm for drawing a line
+ *
+ * @param x1 initial x coordinate of line
+ * @param y1 initial y coordinate of line
+ * @param x2 final x coordinate of line
+ * @param y2 final y coordinate of line
+ * @param color denotes line color
+ */
 void GraphicsContext::drawLine(falconOS::core::types::int32_t x1,
                                falconOS::core::types::int32_t y1,
                                falconOS::core::types::int32_t x2,
                                falconOS::core::types::int32_t y2,
                                falconOS::libgui::Color color) {
-  // int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
-  // dx = x2 - x1; /* the horizontal distance of the line */
-  // dy = y2 - y1; /* the vertical distance of the line */
-  // dxabs = abs(dx);
-  // dyabs = abs(dy);
-  // sdx = sgn(dx);
-  // sdy = sgn(dy);
-  // x = dyabs >> 1;
-  // y = dxabs >> 1;
-  // px = x1;
-  // py = y1;
 
-  // if (dxabs >= dyabs) /* the line is more horizontal than vertical */
-  // {
-  //   for (i = 0; i < dxabs; i++) {
-  //     y += dyabs;
-  //     if (y >= dxabs) {
-  //       y -= dxabs;
-  //       py += sdy;
-  //     }
-  //     px += sdx;
-  //     plotPixel(px, py, color.get8BitColorValue());
-  //   }
-  // } else /* the line is more vertical than horizontal */
-  // {
-  //   for (i = 0; i < dyabs; i++) {
-  //     x += dxabs;
-  //     if (x >= dyabs) {
-  //       x -= dyabs;
-  //       px += sdx;
-  //     }
-  //     py += sdy;
-  //     plotPixel(px, py, color.get8BitColorValue());
-  //   }
-  // }
+  int i, dx, dy, signdx, signdy, dxabs, dyabs, x, y, pixelX, pixelY;
+  /// horizontal distance of line
+  dx = x2 - x1;
+
+  /// vertical distance of line
+  dy = y2 - y1;
+
+  dxabs = abs(dx);
+  dyabs = abs(dy);
+
+  signdx = signOf(dx);
+  signdy = signOf(dy);
+
+  x = dyabs >> 1;
+  y = dxabs >> 1;
+
+  pixelX = x1;
+  pixelY = y1;
+
+  /// line is more horizontal than vertical
+  if (dxabs >= dyabs) {
+    for (i = 0; i < dxabs; i++) {
+      y += dyabs;
+      if (y >= dxabs) {
+        y -= dxabs;
+        pixelY += signdy;
+      }
+      pixelX += signdx;
+      plotPixel(pixelX, pixelY, color.get8BitColorValue());
+    }
+  }
+  /// line is more vertical than horizontal
+  else {
+    for (i = 0; i < dyabs; i++) {
+      x += dxabs;
+      if (x >= dyabs) {
+        x -= dyabs;
+        pixelX += signdx;
+      }
+      pixelY += signdy;
+      plotPixel(pixelX, pixelY, color.get8BitColorValue());
+    }
+  }
 }
 
 /// TODO

@@ -16,7 +16,8 @@ objects = bin/loader.o 								\
 	  bin/resources/system_calls.o 					\
 	  bin/hardware_interaction/pci.o 					\
 	  bin/core/streamio.o 							\
-	  bin/core/base_string.o
+	  bin/core/base_string.o				\
+		bin/libc/cmath.o
 
 bin/%.o: src/%.cpp
 	mkdir -p $(@D)
