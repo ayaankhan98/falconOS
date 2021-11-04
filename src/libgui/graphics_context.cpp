@@ -32,23 +32,6 @@ void GraphicsContext::plotPixel(falconOS::core::types::int32_t x,
                                                    color.get8BitColorValue());
 }
 
-void GraphicsContext::drawRectangle(falconOS::core::types::uint32_t x,
-                                    falconOS::core::types::uint32_t y,
-                                    falconOS::core::types::uint32_t width,
-                                    falconOS::core::types::uint32_t height,
-                                    falconOS::libgui::Color color) {}
-
-void GraphicsContext::fillRectangle(falconOS::core::types::uint32_t x,
-                                    falconOS::core::types::uint32_t y,
-                                    falconOS::core::types::uint32_t width,
-                                    falconOS::core::types::uint32_t height,
-                                    falconOS::libgui::Color color) {
-  for (falconOS::core::types::int32_t Y = y; Y < y + height; Y++)
-    for (falconOS::core::types::int32_t X = x; X < x + width; X++)
-      falconOS::drivers::VideoGraphicsArray::plotPixel(
-          X, Y, color.get8BitColorValue());
-}
-
 /**
  * @brief using Bresenham's line algorithm for drawing a line
  *
@@ -107,6 +90,29 @@ void GraphicsContext::drawLine(falconOS::core::types::int32_t x1,
       plotPixel(pixelX, pixelY, color.get8BitColorValue());
     }
   }
+}
+
+void GraphicsContext::drawRectangle(falconOS::core::types::uint32_t x,
+                                    falconOS::core::types::uint32_t y,
+                                    falconOS::core::types::uint32_t width,
+                                    falconOS::core::types::uint32_t height,
+                                    falconOS::libgui::Color color) {
+  plotPixel(x, y, color.get8BitColorValue());
+  drawLine(x, y, x + width, y, color.get8BitColorValue());
+  drawLine(x, y, x, y + height, color.get8BitColorValue());
+  drawLine(x + width, y, x + width, y + height, color.get8BitColorValue());
+  drawLine(x, y + height, x + width, y + height, color.get8BitColorValue());
+}
+
+void GraphicsContext::fillRectangle(falconOS::core::types::uint32_t x,
+                                    falconOS::core::types::uint32_t y,
+                                    falconOS::core::types::uint32_t width,
+                                    falconOS::core::types::uint32_t height,
+                                    falconOS::libgui::Color color) {
+  for (falconOS::core::types::int32_t Y = y; Y < y + height; Y++)
+    for (falconOS::core::types::int32_t X = x; X < x + width; X++)
+      falconOS::drivers::VideoGraphicsArray::plotPixel(
+          X, Y, color.get8BitColorValue());
 }
 
 /// TODO
