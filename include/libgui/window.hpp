@@ -1,6 +1,7 @@
 #pragma once
 
 #include <drivers/mouse.h>
+#include <libgui/composite_widget.hpp>
 #include <libgui/widget.hpp>
 
 namespace falconOS {
