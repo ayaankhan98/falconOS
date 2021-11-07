@@ -4,10 +4,12 @@
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 #include <gdt.h>
+#include <paging.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
 #include <libgui/graphics_context.h>
 #include <resources/dynamic_memory_management.h>
+#include <resources/placement_memory_management.h>
 #include <resources/system_calls.h>
 
 #define GRAPHICS_MODE
@@ -36,6 +38,7 @@ extern "C" void callConstructors() {
     (*i)();
 }
 
+extern uint32_t end;
 uint8_t inversion[screen::COLUMNS][screen::ROWS];
 
 void updateMousePointer(int8_t pos_x, int8_t pos_y) {
@@ -130,6 +133,16 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   LOG("Initiating Hardware Stage 1");
   GlobalDescriptorTable gdt;
 
+ 
+  size_t kheapStart = 0x10;
+  PlacementMemoryManager placementMemoryManager(&kheapStart);
+  Frames frames;
+  uint32_t pagingCapacity = 0x1000000;
+
+  PagingManager pagingManager(pagingCapacity, &frames, &placementMemoryManager);
+
+  // uint32_t *ptr = (uint32_t*)0xA0000000;
+  // uint32_t doPageFault = *ptr;
   TaskManager taskManager;
 #ifdef MULTITASKING
   Task tA(&gdt, taskA);
@@ -143,6 +156,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
   uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
   size_t heap = 10 * 1024 * 1024;
+  #ifdef MEMORY
   MemoryManager memoryManager(heap, (*memupper) * 1024 - heap - 10 * 1024);
 
   printf("heap: 0x");
@@ -166,6 +180,40 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2 >> 8) & 0xFF);
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
+  #endif
+
+      /* end */ /// set kheap after the reserved bytes for the heap
+  printf("kheap: 0x");
+  printfHexa((kheapStart >> 24) & 0xFF);
+  printfHexa((kheapStart >> 16) & 0xFF);
+  printfHexa((kheapStart >> 8) & 0xFF);
+  printfHexa((kheapStart)&0xFF);
+
+  /*
+  printf("kheap: 0x");
+  printfHexa((kheapStart >> 24) & 0xFF);
+  printfHexa((kheapStart >> 16) & 0xFF);
+  printfHexa((kheapStart >> 8) & 0xFF);
+  printfHexa((kheapStart)&0xFF);
+
+  void *allocated3 = placementMemoryManager.kMalloc(4096, false);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated3 >> 24) & 0xFF);
+  printfHexa(((size_t)allocated3 >> 16) & 0xFF);
+  printfHexa(((size_t)allocated3 >> 8) & 0xFF);
+  printfHexa(((size_t)allocated3) & 0xFF);
+  printf("\n");
+
+  void *allocated4 = placementMemoryManager.kMalloc(4096, false);
+  printf("\nallocated: 0x");
+  printfHexa(((size_t)allocated4 >> 24) & 0xFF);
+  printfHexa(((size_t)allocated4 >> 16) & 0xFF);
+  printfHexa(((size_t)allocated4 >> 8) & 0xFF);
+  printfHexa(((size_t)allocated4) & 0xFF);
+  printf("\n");
+  */
+
+
 
   DeviceDriverManager deviceDriverManager;
 
@@ -208,6 +256,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 #endif
 
   sysPrintf("Checking System Calls");
+
   while (1)
     ;
 }
