@@ -5,18 +5,21 @@ objects = bin/loader.o 								\
 		bin/multitasking/task_manager.o \
 		bin/resources/dynamic_memory_management.o   \
 	  bin/drivers/drivers.o 						\
+		bin/drivers/video_graphics_array.o \
+		bin/libgui/colors.o \
+		bin/libgui/graphics_context.o \
 	  bin/drivers/keyboard.o 						\
 	  bin/drivers/mouse.o 							\
 	  bin/hardware_interaction/port.o 					\
 	  bin/hardware_interaction/interrupt_stubs.o 				\
 	  bin/hardware_interaction/interrupt.o 					\
-	  bin/resources/system_calls.o 					\
-	  bin/libc/memset.o								\
+	  bin/resources/system_calls.o						\
 	  bin/resources/placement_memory_management.o	\
 	  bin/paging.o									\
 	  bin/hardware_interaction/pci.o 					\
 	  bin/core/streamio.o 							\
-	  bin/core/base_string.o						\
+	  bin/core/base_string.o				\
+		bin/libc/cmath.o
 
 bin/%.o: src/%.cpp
 	mkdir -p $(@D)

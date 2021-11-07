@@ -7,9 +7,12 @@
 #include <paging.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <libgui/graphics_context.h>
 #include <resources/dynamic_memory_management.h>
 #include <resources/placement_memory_management.h>
 #include <resources/system_calls.h>
+
+#define GRAPHICS_MODE
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -19,7 +22,7 @@ using namespace falconOS;
 using namespace falconOS::resources::memory;
 using namespace falconOS::multitasking;
 using namespace falconOS::resources::syscalls;
-using namespace falconOS::resources::pmemory;
+using namespace falconOS::libgui;
 
 typedef void (*constructor)();
 
@@ -225,10 +228,32 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   PeripheralComponentInterconnectController PCIController;
   PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
 
+#ifdef GRAPHICS_MODE
+  GraphicsContext gc;
+#endif
+
   LOG("Initiating Hardware Stage 2");
   deviceDriverManager.activateAll();
   LOG("Initiating Hardware Stage 3");
   interruptManager.activate();
+
+#ifdef GRAPHICS_MODE
+  gc.setMode(320, 200, 8);
+  for (int32_t y = 0; y < 200; y++) {
+    for (int32_t x = 0; x < 320; x++) {
+      gc.plotPixel(x, y, Color(VGA_COLOR::BLACK));
+    }
+  }
+
+  gc.drawLine(2, 3, 50, 50, Color(VGA_COLOR::GREEN));
+  gc.drawLine(22, 10, 50, 50, Color(VGA_COLOR::BLUE));
+  gc.drawLine(40, 2, 50, 50, Color(VGA_COLOR::RED));
+  gc.drawLine(55, 20, 60, 120, Color(VGA_COLOR::CYAN));
+
+  gc.drawRectangle(110, 90, 80, 80, Color(VGA_COLOR::RED));
+  gc.drawRectangle(120, 100, 70, 70, Color(VGA_COLOR::WHITE));
+
+#endif
 
   sysPrintf("Checking System Calls");
 
