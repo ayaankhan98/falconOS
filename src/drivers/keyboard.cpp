@@ -6,14 +6,6 @@ using namespace falconOS::drivers;
 using namespace falconOS::core::types;
 using namespace falconOS::core;
 
-KeyboardEventHandler::KeyboardEventHandler() {}
-
-KeyboardEventHandler::~KeyboardEventHandler() {}
-
-void KeyboardEventHandler::onKeyPressed(char) {}
-
-void KeyboardEventHandler::onKeyReleased(char) {}
-
 KeyboardDriver::KeyboardDriver(
     falconOS::hardware_interaction::InterruptManager *manager,
     KeyboardEventHandler *keyboardEventHandler)
