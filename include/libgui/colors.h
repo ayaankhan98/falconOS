@@ -47,6 +47,8 @@ public:
         falconOS::core::types::uint8_t blue);
   ~Color();
 
+  void operator=(Color &color);
+
   virtual void setColor(falconOS::core::types::uint8_t red,
                         falconOS::core::types::uint8_t green,
                         falconOS::core::types::uint8_t blue);

@@ -49,6 +49,8 @@ void Color::setColor(VGA_COLOR colorValue8Bit) {
   /// this->RGBColor_ = map8BitColorValueToRGB(colorValue8Bit);
 }
 
+void Color::operator=(Color &color) { this->RGBColor_ = color.RGBColor_; }
+
 VGA_COLOR Color::get8BitColorValue() { return this->colorValue8Bit_; }
 falconOS::libgui::RGBColor Color::getRGBColorValue() { return this->RGBColor_; }
 } // namespace libgui
