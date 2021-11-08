@@ -204,10 +204,10 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
 #ifdef GRAPHICS_MODE
   gc.setMode(320, 200, 8);
-  Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
-  desktop.add(&win1);
-  Window win2(&desktop, 40, 15, 30, 30, &Color(VGA_COLOR::RED));
-  desktop.add(&win2);
+  // Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
+  // desktop.add(&win1);
+  // Window win2(&desktop, 40, 15, 30, 30, &Color(VGA_COLOR::RED));
+  // desktop.add(&win2);
 #endif
 
   sysPrintf("Checking System Calls");
