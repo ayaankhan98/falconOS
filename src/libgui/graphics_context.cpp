@@ -32,6 +32,10 @@ void GraphicsContext::plotPixel(falconOS::core::types::int32_t x,
                                                    color->get8BitColorValue());
 }
 
+void GraphicsContext::copyBuffer() {
+  falconOS::drivers::VideoGraphicsArray::copyBuffer();
+}
+
 /**
  * @brief using Bresenham's line algorithm for drawing a line
  *

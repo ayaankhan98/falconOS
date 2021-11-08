@@ -16,7 +16,9 @@ VideoGraphicsArray::VideoGraphicsArray()
       attributeControllerIndexPort(ATTRIBUTE_CONTROLLER_INDEX_PORT),
       attributeControllerReadPort(ATTRIBUTE_CONTROLLER_READ_PORT),
       attributeControllerWritePort(ATTRIBUTE_CONTROLLER_WRITE_PORT),
-      attributeControllerResetPort(ATTRIBUTE_CONTROLLER_RESET_PORT) {}
+      attributeControllerResetPort(ATTRIBUTE_CONTROLLER_RESET_PORT) {
+  doubleBuffer = new uint8_t[320 * 200];
+}
 
 VideoGraphicsArray::VideoGraphicsArray(uint32_t width, uint32_t height,
                                        uint32_t colordepth)
@@ -31,6 +33,7 @@ VideoGraphicsArray::VideoGraphicsArray(uint32_t width, uint32_t height,
       attributeControllerReadPort(ATTRIBUTE_CONTROLLER_READ_PORT),
       attributeControllerWritePort(ATTRIBUTE_CONTROLLER_WRITE_PORT),
       attributeControllerResetPort(ATTRIBUTE_CONTROLLER_RESET_PORT) {
+  doubleBuffer = new uint8_t[320 * 200];
   this->setMode(width, height, colordepth);
 }
 
@@ -143,8 +146,17 @@ void VideoGraphicsArray::plotPixel(int32_t x, int32_t y, uint8_t colorIndex) {
   if (x < 0 || 320 <= x || y < 0 || 200 <= y)
     return;
 
-  uint8_t *pixelAddress = getFrameBufferSegment() + 320 * y + x;
-  *pixelAddress = colorIndex;
+  doubleBuffer[(y << 8) + (y << 6) + x] = colorIndex;
+
+  // uint8_t *pixelAddress = getFrameBufferSegment() + 320 * y + x;
+  // *pixelAddress = colorIndex;
+}
+
+void VideoGraphicsArray::copyBuffer() {
+  uint8_t *pixelAddress = getFrameBufferSegment() + 320;
+  for (int i = 0; i < 320 * 200; i++) {
+    pixelAddress[i] = doubleBuffer[i];
+  }
 }
 
 uint8_t VideoGraphicsArray::getColorIndex(uint8_t r, uint8_t g, uint8_t b) {

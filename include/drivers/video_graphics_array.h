@@ -86,6 +86,8 @@ protected:
   void writeRegisters(falconOS::core::types::uint8_t *registers);
   falconOS::core::types::uint8_t *getFrameBufferSegment();
 
+  falconOS::core::types::uint8_t *doubleBuffer;
+
   virtual falconOS::core::types::uint8_t
   getColorIndex(falconOS::core::types::uint8_t r,
                 falconOS::core::types::uint8_t g,
@@ -105,6 +107,8 @@ public:
   bool setMode(falconOS::core::types::uint32_t width,
                falconOS::core::types::uint32_t height,
                falconOS::core::types::uint32_t colordepth);
+
+  void copyBuffer();
 
   void plotPixel(falconOS::core::types::int32_t x,
                  falconOS::core::types::int32_t y,
