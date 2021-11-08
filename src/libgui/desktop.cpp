@@ -35,17 +35,20 @@ void Desktop::onMouseKeyReleased(falconOS::core::types::uint8_t button) {
 void Desktop::onMouseMove(falconOS::core::types::int32_t x,
                           falconOS::core::types::int32_t y) {
 
+  x /= 4;
+  y /= 4;
+
   falconOS::core::types::int32_t newMouseX = mouseX_ + x;
-  if (newMouseX < 0)
-    newMouseX = 0;
-  if (newMouseX >= w)
-    newMouseX = w - 1;
+  if (newMouseX < 4)
+    newMouseX = 4;
+  if (newMouseX >= w - 4)
+    newMouseX = w - 5;
 
   falconOS::core::types::int32_t newMouseY = mouseY_ + y;
-  if (newMouseY < 0)
-    newMouseY = 0;
-  if (newMouseY >= h)
-    newMouseY = h - 1;
+  if (newMouseY < 4)
+    newMouseY = 4;
+  if (newMouseY >= h - 4)
+    newMouseY = h - 5;
 
   CompositeWidget::onMouseMove(mouseX_, mouseY_, newMouseX, newMouseY);
 
