@@ -33,7 +33,6 @@ void Desktop::onMouseKeyReleased(falconOS::core::types::uint8_t button) {
 void Desktop::onMouseMove(falconOS::core::types::int32_t x,
                           falconOS::core::types::int32_t y) {
 
-
   x /= 4;
   y /= 4;
 
