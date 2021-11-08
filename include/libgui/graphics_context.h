@@ -23,6 +23,8 @@ public:
                          falconOS::core::types::int32_t y,
                          falconOS::libgui::Color *color);
 
+  void copyBuffer();
+
   virtual void drawLine(falconOS::core::types::int32_t x1,
                         falconOS::core::types::int32_t y1,
                         falconOS::core::types::int32_t x2,
