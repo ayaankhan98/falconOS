@@ -152,7 +152,7 @@ void VideoGraphicsArray::plotPixel(int32_t x, int32_t y, uint8_t colorIndex) {
   // *pixelAddress = colorIndex;
 }
 
-void VideoGraphicsArray::copyBuffer() {
+void VideoGraphicsArray::swapBuffer() {
   uint8_t *pixelAddress = getFrameBufferSegment() + 320;
   for (int i = 0; i < 320 * 200; i++) {
     pixelAddress[i] = doubleBuffer[i];

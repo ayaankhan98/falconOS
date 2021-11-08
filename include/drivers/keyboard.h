@@ -2,19 +2,12 @@
 
 #include <core/types.h>
 #include <drivers/drivers.h>
+#include <events/keyboard_event_handler.hpp>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/port.h>
 
 namespace falconOS {
 namespace drivers {
-class KeyboardEventHandler {
-public:
-  KeyboardEventHandler();
-  ~KeyboardEventHandler();
-
-  virtual void onKeyPressed(char);
-  virtual void onKeyReleased(char);
-};
 
 class KeyboardDriver : public falconOS::hardware_interaction::InterruptHandler,
                        public DeviceDriver {

@@ -2,35 +2,12 @@
 
 #include <core/types.h>
 #include <drivers/drivers.h>
+#include <events/mouse_event_handler.hpp>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/port.h>
 
 namespace falconOS {
 namespace drivers {
-class MouseEventHandler {
-public:
-  MouseEventHandler();
-  ~MouseEventHandler();
-
-  virtual void onActivate();
-  virtual void onMouseKeyPressed(falconOS::core::types::int32_t x,
-                                 falconOS::core::types::int32_t y,
-                                 falconOS::core::types::uint8_t button);
-  virtual void onMouseKeyPressed(falconOS::core::types::uint8_t button);
-
-  virtual void onMouseKeyReleased(falconOS::core::types::int32_t x,
-                                  falconOS::core::types::int32_t y,
-                                  falconOS::core::types::uint8_t button);
-  virtual void onMouseKeyReleased(falconOS::core::types::uint8_t button);
-
-  virtual void onMouseMove(falconOS::core::types::int32_t x,
-                           falconOS::core::types::int32_t y);
-  virtual void onMouseMove(falconOS::core::types::int32_t oldX,
-                           falconOS::core::types::int32_t oldY,
-                           falconOS::core::types::int32_t newX,
-                           falconOS::core::types::int32_t newY);
-};
-
 class MouseDriver : public falconOS::hardware_interaction::InterruptHandler,
                     public DeviceDriver {
   falconOS::hardware_interaction::Port8Bit dataPort;

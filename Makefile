@@ -12,6 +12,8 @@ objects = bin/loader.o 								\
 		bin/libgui/desktop.o \
 		bin/libgui/window.o \
 		bin/libgui/graphics_context.o \
+		bin/events/keyboard_event_handler.o \
+		bin/events/mouse_event_handler.o \
 	  bin/drivers/keyboard.o 						\
 	  bin/drivers/mouse.o 							\
 	  bin/hardware_interaction/port.o 					\
