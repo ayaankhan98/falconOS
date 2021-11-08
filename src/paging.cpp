@@ -1,17 +1,13 @@
-#include <core/streamio.h>
-#include <libc/memset.h>
-#include <paging.h>
 #include <core/base_string.h>
+#include <core/streamio.h>
+#include <paging.h>
 
 using namespace falconOS::core::types;
 using namespace falconOS::resources::pmemory;
 using namespace falconOS::core;
 using namespace falconOS;
-using namespace falconOS::libc;
 
-PageDescriptor::PageDescriptor() { 
-  initPageDescriptor();
-}
+PageDescriptor::PageDescriptor() { initPageDescriptor(); }
 
 PageDescriptor::PageDescriptor(uint32_t frameAddress, bool written,
                                bool accessed, bool userMode, bool writable,
@@ -46,16 +42,16 @@ bool PageDescriptor::getFlagValue(uint16_t offset) {
   return (pageDescriptorWord_ & (1 << offset));
 }
 
-void PageDescriptor::initPageDescriptor() { 
-  setFrameAddress(0);       /// Frame Address
-  setFlagValue(0, 6);       /// Set if the page has been written to
-  setFlagValue(0, 5);       /// Set if the page has been accessed
-  setFlagValue(0, 2);       /// Set if the page is in User Mode
-  setFlagValue(0, 1);       /// Set if the page is writable, else read only
-  setFlagValue(0, 0);       /// Set if the page is present in the memory
+void PageDescriptor::initPageDescriptor() {
+  setFrameAddress(0); /// Frame Address
+  setFlagValue(0, 6); /// Set if the page has been written to
+  setFlagValue(0, 5); /// Set if the page has been accessed
+  setFlagValue(0, 2); /// Set if the page is in User Mode
+  setFlagValue(0, 1); /// Set if the page is writable, else read only
+  setFlagValue(0, 0); /// Set if the page is present in the memory
 }
 
-Frames::Frames(uint32_t maxFrameTables): maxFrameTables_(maxFrameTables) {
+Frames::Frames(uint32_t maxFrameTables) : maxFrameTables_(maxFrameTables) {
   initFrames(maxFrameTables);
 }
 Frames::Frames() {}
@@ -135,7 +131,7 @@ void Frames::freeFrame(PageDescriptor *pageDescriptor) {
 }
 
 void Frames::initFrames(uint32_t maxFrameTables) {
-  for(int i=0; i < maxFrameTables; ++i) {
+  for (int i = 0; i < maxFrameTables; ++i) {
     this->frameTable_[i] = 0;
   }
 }
@@ -144,14 +140,15 @@ PageTable::PageTable() {}
 PageTable::~PageTable() {}
 
 void PageTable::initPageTable() {
-  for(int i=0; i<1024; ++i) {
+  for (int i = 0; i < 1024; ++i) {
     pages_[i]->initPageDescriptor();
   }
 }
 
 void PageTable::allocPageTable(PlacementMemoryManager *placementMemoryManager) {
-  for(int i=0; i<1024; ++i) {
-    pages_[i] = (PageDescriptor *) placementMemoryManager->kMalloc(sizeof(PageDescriptor), 1); 
+  for (int i = 0; i < 1024; ++i) {
+    pages_[i] = (PageDescriptor *)placementMemoryManager->kMalloc(
+        sizeof(PageDescriptor), 1);
     pages_[i]->initPageDescriptor();
   }
 }
@@ -159,9 +156,11 @@ void PageTable::allocPageTable(PlacementMemoryManager *placementMemoryManager) {
 PageDirectory::PageDirectory() {}
 PageDirectory::~PageDirectory() {}
 
-void PageDirectory::initPageDirectory(PlacementMemoryManager *placementMemoryManager) {
-  for(int i=0; i<1024; ++i) {
-    this->pageTablesVirtual_[i] = (PageTable *)placementMemoryManager->kMalloc(sizeof(PageTable), 1) ;
+void PageDirectory::initPageDirectory(
+    PlacementMemoryManager *placementMemoryManager) {
+  for (int i = 0; i < 1024; ++i) {
+    this->pageTablesVirtual_[i] =
+        (PageTable *)placementMemoryManager->kMalloc(sizeof(PageTable), 1);
     this->pageTablesVirtual_[i]->allocPageTable(placementMemoryManager);
     this->pageTablesPhysical_[i] = 0;
   }
@@ -173,7 +172,7 @@ PagingManager::PagingManager(uint32_t capacity, Frames *frames,
   currentDirectory = 0;
   kernelDirectory = 0;
   this->placementMemoryManager = placementMemoryManager;
-  
+
   uint32_t physicalSize = capacity;
   frames->maxFrameTables_ = physicalSize / 0x1000;
   frames->frameTable_ =
@@ -181,7 +180,7 @@ PagingManager::PagingManager(uint32_t capacity, Frames *frames,
 
   uint32_t sizeFrameTables = frames->indexFromBit(frames->maxFrameTables_);
   frames->initFrames(sizeFrameTables);
-  
+
   uint32_t sizePageDirectory = sizeof(PageDirectory);
   kernelDirectory =
       (PageDirectory *)placementMemoryManager->kMalloc(sizePageDirectory, 1);
@@ -218,18 +217,20 @@ PageDescriptor *PagingManager::getPage(falconOS::core::types::uint32_t address,
   uint32_t pageIndex = address % 1024;
 
   if (pageDirectory->pageTablesVirtual_[tableIndex]) {
-    return &(*(pageDirectory->pageTablesVirtual_[tableIndex])->pages_[pageIndex]);
+    return &(
+        *(pageDirectory->pageTablesVirtual_[tableIndex])->pages_[pageIndex]);
   } else if (make) {
     pageDirectory->pageTablesVirtual_[tableIndex] =
         (PageTable *)placementMemoryManager->kMalloc(sizeof(PageTable), 1);
-     pageDirectory->pageTablesVirtual_[tableIndex]->initPageTable();
-    //memset((uint8_t *)pageDirectory->pageTablesVirtual_[tableIndex], 0,
-    //0x1000);
-  uint32_t *temp = ((uint32_t *)pageDirectory->pageTablesVirtual_[tableIndex]); 
-    pageDirectory->pageTablesPhysical_[tableIndex] =
-        *temp | 0x7;
+    pageDirectory->pageTablesVirtual_[tableIndex]->initPageTable();
+    // memset((uint8_t *)pageDirectory->pageTablesVirtual_[tableIndex], 0,
+    // 0x1000);
+    uint32_t *temp =
+        ((uint32_t *)pageDirectory->pageTablesVirtual_[tableIndex]);
+    pageDirectory->pageTablesPhysical_[tableIndex] = *temp | 0x7;
 
-    return &(*(pageDirectory->pageTablesVirtual_[tableIndex])->pages_[pageIndex]);
+    return &(
+        *(pageDirectory->pageTablesVirtual_[tableIndex])->pages_[pageIndex]);
   } else {
     return 0;
   }
@@ -239,8 +240,7 @@ PageFaultHandler::PageFaultHandler(
     falconOS::hardware_interaction::InterruptManager *interruptManager,
     falconOS::core::types::uint8_t interruptNumber)
     : InterruptHandler(interruptManager, interruptNumber) {}
-PageFaultHandler::~PageFaultHandler(){
-}
+PageFaultHandler::~PageFaultHandler() {}
 uint32_t PageFaultHandler::handleInterrupt(uint32_t esp) {
   LOG("Executed Page Fault Handler");
   return esp;
