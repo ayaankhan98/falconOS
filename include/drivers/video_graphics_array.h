@@ -108,7 +108,7 @@ public:
                falconOS::core::types::uint32_t height,
                falconOS::core::types::uint32_t colordepth);
 
-  void copyBuffer();
+  void swapBuffer();
 
   void plotPixel(falconOS::core::types::int32_t x,
                  falconOS::core::types::int32_t y,

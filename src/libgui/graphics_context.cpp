@@ -32,8 +32,8 @@ void GraphicsContext::plotPixel(falconOS::core::types::int32_t x,
                                                    color->get8BitColorValue());
 }
 
-void GraphicsContext::copyBuffer() {
-  falconOS::drivers::VideoGraphicsArray::copyBuffer();
+void GraphicsContext::swapBuffer() {
+  falconOS::drivers::VideoGraphicsArray::swapBuffer();
 }
 
 /**
@@ -129,10 +129,19 @@ void GraphicsContext::fillCircle(falconOS::core::types::int32_t xCenter,
                                  falconOS::core::types::int32_t yCenter,
                                  falconOS::core::types::int32_t radius,
                                  falconOS::libgui::Color *color) {}
-/// TODO
+
 void GraphicsContext::drawPloygon(falconOS::core::types::int32_t verticesCount,
                                   falconOS::core::types::int32_t *vertices,
-                                  falconOS::libgui::Color *color) {}
+                                  falconOS::libgui::Color *color) {
+  for (int i = 1; i < verticesCount; i++) {
+    /// x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, ...
+    /// to access nth vertex 2 * n - 2;
+    drawLine(vertices[2 * i - 2], vertices[2 * i - 1],
+             vertices[2 * (i + 1) - 2], vertices[2 * (i + 1) - 1], color);
+  }
+  drawLine(vertices[verticesCount - 2], vertices[verticesCount - 1],
+           vertices[0], vertices[1], color);
+}
 
 /// TODO
 void GraphicsContext::fillPolygon(falconOS::core::types::int32_t verticesCount,
