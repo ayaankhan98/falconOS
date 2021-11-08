@@ -21,7 +21,7 @@ void Desktop::draw(falconOS::libgui::GraphicsContext *gc) {
     gc->plotPixel(mouseX_, mouseY_ + i, &Color(VGA_COLOR::BLACK));
   }
 
-  gc->copyBuffer();
+  gc->swapBuffer();
 }
 
 void Desktop::onMouseKeyPressed(falconOS::core::types::uint8_t button) {
