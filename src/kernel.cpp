@@ -6,6 +6,7 @@
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <libc/assert.hpp>
 #include <libgui/desktop.hpp>
 #include <libgui/graphics_context.h>
 #include <libgui/widget.hpp>
