@@ -6,6 +6,7 @@
 #include <gdt.h>
 #include <hardware_interaction/interrupt.h>
 #include <hardware_interaction/pci.h>
+#include <libc/assert.hpp>
 #include <libgui/desktop.hpp>
 #include <libgui/graphics_context.h>
 #include <libgui/widget.hpp>
@@ -13,7 +14,7 @@
 #include <resources/dynamic_memory_management.h>
 #include <resources/system_calls.h>
 
-#define GRAPHICS_MODE
+// #define GRAPHICS_MODE
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -127,6 +128,7 @@ void taskB() {
 
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
+  ASSERT(2 == 3);
   LOG("Booting Kernel");
   LOG("Initiating Hardware Stage 1");
   GlobalDescriptorTable gdt;
