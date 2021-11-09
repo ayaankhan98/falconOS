@@ -4,7 +4,7 @@
 
 ----
 
-falcon OS is a basic operating system in Monolithic Architecture.
+falcon OS is a basic operating system from scratch aiming to follow Monolithic Kernel Architecture. It's a kind of hobby Operating System created out of interest in order to explore the fields of Kernel Development, System Programming, Thread safe Data Structures and Algorithms Design, Large Scale Software Design.
 
 ## Features - so far what we have?
 - [x] Segmentation based Memory architecture
@@ -35,7 +35,7 @@ Install GCC compiler
 ```
 sudo pacman -Sy gcc
 ```
-Install Xorriso for ISO building
+Install xorriso for ISO building
 ```
 sudo pacman -Sy xorriso
 ```
