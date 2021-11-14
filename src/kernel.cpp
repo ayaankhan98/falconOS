@@ -203,6 +203,9 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   LOG("Initiating Hardware Stage 3");
   interruptManager.activate();
 
+  sysPrintf("Loading GUI ...");
+  for(uint32_t i=0; i<2e9; ++i);
+
 #ifdef GRAPHICS_MODE
   gc.setMode(320, 200, 8);
   Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
@@ -211,7 +214,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   desktop.add(&win2);
 #endif
 
-  sysPrintf("Checking System Calls");
+
   while (1) {
 #ifdef GRAPHICS_MODE
     desktop.draw(&gc);
