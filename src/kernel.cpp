@@ -154,7 +154,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printf("Demonstrating Dynamic Memory Allocation", color::WHITE_ON_BLACK);
   printf("...", color::WHITE_ON_BLACK, true);
   printf("\n");
-  
+
   printf("heap: 0x");
   printfHexa((heap >> 24) & 0xFF);
   printfHexa((heap >> 16) & 0xFF);
@@ -225,14 +225,14 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printf("Loading GUI...", color::WHITE_ON_BLACK);
   printf("...", color::WHITE_ON_BLACK, true);
   printf("\n");
-  for(uint32_t i=0; i<2e9; ++i);
+  for (uint32_t i = 0; i < 2e9; ++i)
+    ;
   gc.setMode(320, 200, 8);
   Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
   desktop.add(&win1);
   Window win2(&desktop, 40, 15, 30, 30, &Color(VGA_COLOR::RED));
   desktop.add(&win2);
 #endif
-
 
   while (1) {
 #ifdef GRAPHICS_MODE

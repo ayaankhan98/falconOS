@@ -18,7 +18,8 @@ void printf(const char *str_, const color color_, const bool blink) {
 
     default:
       videoMemory[screen::COLUMNS * cursorY + cursorX] =
-          (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0x00FF) | (color_ | (blink ? 0x8000 : 0x0000));
+          (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0x00FF) |
+          (color_ | (blink ? 0x8000 : 0x0000));
       videoMemory[screen::COLUMNS * cursorY + cursorX] =
           (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0xFF00) | str_[i];
       cursorX++;

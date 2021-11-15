@@ -35,25 +35,25 @@ char *to_string(const int val, int base) {
 
   for (int i = 0; i < length; temp /= base, ++i) {
     str_[i] = temp % base + '0';
-    if(str_[i] > '9') {
+    if (str_[i] > '9') {
       str_[i] -= '9' + 1;
       str_[i] += 'A';
     }
   }
-  switch(base) {
-    case 16:
-      str_[length] = 'x';
-      str_[length + 1] = '0';
-      str_[length + 2] = '\0';
-      break;
-    case 2:
-      str_[length] = 'b';
-      str_[length + 1] = '0';
-      str_[length + 2] = '\0';
-      break;
-    case 10:
-    default:
-      str_[length] = '\0';
+  switch (base) {
+  case 16:
+    str_[length] = 'x';
+    str_[length + 1] = '0';
+    str_[length + 2] = '\0';
+    break;
+  case 2:
+    str_[length] = 'b';
+    str_[length + 1] = '0';
+    str_[length + 2] = '\0';
+    break;
+  case 10:
+  default:
+    str_[length] = '\0';
   }
 
   return strrev(str_);
