@@ -14,7 +14,10 @@
 #include <resources/dynamic_memory_management.h>
 #include <resources/system_calls.h>
 
-#define GRAPHICS_MODE
+// #define GRAPHICS_MODE
+// #define DMA
+// #define MULTITASKING
+// #define PCIDEVICES
 
 using namespace falconOS::core::types;
 using namespace falconOS::core;
@@ -128,8 +131,8 @@ void taskB() {
 
 /// TODO Use the multiboot structure defined in multiboot.h in GNU project
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
-  LOG("Booting Kernel");
-  LOG("Initiating Hardware Stage 1");
+  log("Booting Kernel");
+  log("Initiating Hardware Stage 1");
   GlobalDescriptorTable gdt;
 
   TaskManager taskManager;
@@ -147,6 +150,11 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   size_t heap = 10 * 1024 * 1024;
   MemoryManager memoryManager(heap, (*memupper) * 1024 - heap - 10 * 1024);
 
+#ifdef DMA
+  printf("Demonstrating Dynamic Memory Allocation", color::WHITE_ON_BLACK);
+  printf("...", color::WHITE_ON_BLACK, true);
+  printf("\n");
+  
   printf("heap: 0x");
   printfHexa((heap >> 24) & 0xFF);
   printfHexa((heap >> 16) & 0xFF);
@@ -168,6 +176,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   printfHexa(((size_t)allocated2 >> 8) & 0xFF);
   printfHexa(((size_t)allocated2) & 0xFF);
   printf("\n");
+#endif
 
 #ifdef GRAPHICS_MODE
   Desktop desktop(320, 200, &Color(VGA_COLOR::GREEN));
@@ -198,15 +207,25 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
   GraphicsContext gc;
 #endif
 
-  LOG("Initiating Hardware Stage 2");
+  log("Initiating Hardware Stage 2");
   deviceDriverManager.activateAll();
-  LOG("Initiating Hardware Stage 3");
+  log("Initiating Hardware Stage 3");
   interruptManager.activate();
 
-  sysPrintf("Loading GUI ...");
-  for(uint32_t i=0; i<2e9; ++i);
+  log("All Initializations done");
+
+#ifdef PCIDEVICES
+  printf("Loading PCI connected devices", color::WHITE_ON_BLACK);
+  printf("...", color::WHITE_ON_BLACK, true);
+  printf("\n");
+  PCIController.printPCIDevices();
+#endif
 
 #ifdef GRAPHICS_MODE
+  printf("Loading GUI...", color::WHITE_ON_BLACK);
+  printf("...", color::WHITE_ON_BLACK, true);
+  printf("\n");
+  for(uint32_t i=0; i<2e9; ++i);
   gc.setMode(320, 200, 8);
   Window win1(&desktop, 10, 10, 20, 20, &Color(VGA_COLOR::RED));
   desktop.add(&win1);

@@ -160,7 +160,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x1022: /// AMD
     switch (device.deviceID_) {
     case 0x2000: /// am79c973
-      LOG("AMD device detected");
+      // LOG("AMD device detected");
       break;
     }
 
@@ -172,7 +172,7 @@ DeviceDriver *PeripheralComponentInterconnectController::getDriver(
   case 0x03: /// graphics
     switch (device.subclassID_) {
     case 0x00: /// VGA
-      LOG("VGA detected");
+      // LOG("VGA detected");
       break;
     }
     break;
