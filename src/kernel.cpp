@@ -194,11 +194,8 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber) {
 
 #ifdef GRAPHICS_MODE
   MouseDriver mouse(&interruptManager, &desktop);
-#else
-  MouseToConsole mouseEventHandler;
-  MouseDriver mouse(&interruptManager, &mouseEventHandler);
-#endif
   deviceDriverManager.registerDeviceDriver(&mouse);
+#endif
 
   PeripheralComponentInterconnectController PCIController;
   PCIController.selectDrivers(&deviceDriverManager, &interruptManager);
