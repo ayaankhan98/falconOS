@@ -39,7 +39,8 @@ enum logLevel {
   TRACE = 5
 };
 
-void printf(const char *str_, const color color_ = color::GRAY_ON_BLACK);
+void printf(const char *str_, const color color_ = color::GRAY_ON_BLACK,
+            const bool blink = false);
 
 void printfHexa(types::uint8_t hexaDigit_);
 

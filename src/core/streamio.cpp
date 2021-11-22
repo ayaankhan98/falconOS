@@ -4,7 +4,7 @@ using namespace falconOS::core::types;
 
 namespace falconOS {
 namespace core {
-void printf(const char *str_, const color color_) {
+void printf(const char *str_, const color color_, const bool blink) {
   static uint16_t *videoMemory = (uint16_t *)VIDEO_MEMORY_ADDRESS;
 
   static uint8_t cursorX = 0, cursorY = 0;
@@ -18,7 +18,8 @@ void printf(const char *str_, const color color_) {
 
     default:
       videoMemory[screen::COLUMNS * cursorY + cursorX] =
-          (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0x00FF) | color_;
+          (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0x00FF) |
+          (color_ | (blink ? 0x8000 : 0x0000));
       videoMemory[screen::COLUMNS * cursorY + cursorX] =
           (videoMemory[screen::COLUMNS * cursorY + cursorX] & 0xFF00) | str_[i];
       cursorX++;
