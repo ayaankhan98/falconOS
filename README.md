@@ -41,11 +41,23 @@ Install xorriso for ISO building
 ```
 sudo pacman -Sy xorriso
 ```
+Install mtools
+```
+sudo pacman -Sy mtools
+```
+Install NASM Assembler
+```
+sudo pacman -Sy nasm
+```
 use `Makefile` to build `kernel.iso` target
 ```
 make kernel.iso
 ```
 once you have ISO file, run it in VBox or QEMU.
+
+
+### Ubuntu
+install the same packages using `apt` package manager.
 
 ---
 
