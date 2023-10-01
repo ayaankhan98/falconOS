@@ -49,6 +49,10 @@ Install NASM Assembler
 ```
 sudo pacman -Sy nasm
 ```
+Install Grub 
+```
+sudo pacman -Sy grub
+```
 use `Makefile` to build `kernel.iso` target
 ```
 make kernel.iso
