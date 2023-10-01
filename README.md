@@ -24,7 +24,7 @@ falcon OS is a basic operating system from scratch aiming to follow Monolithic K
 - C++ Toolchain
 - GNU Make
 - NASM and GAS Assembler
-- Xorriso for ISO image building
+- Xorriso and Grub for ISO image building
 - LLVM tools clang-format, clang-tidy
 - QEMU or Oracle Virtual Box or Bosch
 - Development Environment: Linux (Preffered)
@@ -48,6 +48,10 @@ sudo pacman -Sy mtools
 Install NASM Assembler
 ```
 sudo pacman -Sy nasm
+```
+Install Grub 
+```
+sudo pacman -Sy grub
 ```
 use `Makefile` to build `kernel.iso` target
 ```
