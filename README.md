@@ -24,7 +24,7 @@ falcon OS is a basic operating system from scratch aiming to follow Monolithic K
 - C++ Toolchain
 - GNU Make
 - NASM and GAS Assembler
-- Xorriso for ISO image building
+- Xorriso and Grub for ISO image building
 - LLVM tools clang-format, clang-tidy
 - QEMU or Oracle Virtual Box or Bosch
 - Development Environment: Linux (Preffered)
